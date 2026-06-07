@@ -97,9 +97,15 @@ export default function Login() {
                     ),
                   },
                 }}
-                error={!!errors?.email}
-                helperText={errors?.email?.message}
-                {...register("password", {required: "Password is required!" })}
+                error={!!errors?.password}
+                helperText={errors?.password?.message}
+                {...register("password", {
+                  required: "Password is required!",
+                  minLength: {
+                  value: 8,
+                  message: "Password should be at least 8 characters!",
+                }
+                })}
               />
             </Box>
           </Stack>
