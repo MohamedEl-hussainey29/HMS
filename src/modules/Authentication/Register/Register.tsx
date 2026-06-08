@@ -38,10 +38,8 @@ export default function Register() {
     register,
     formState: { errors },
     handleSubmit,
-    watch,
-  } = useForm<registerFormValues>({
-    mode: "onSubmit",
-  });
+    watch  
+  } = useForm<registerFormValues>();
 
   const password = watch("password");
 
@@ -64,7 +62,6 @@ export default function Register() {
 
   const imagePreview = profileImage? URL.createObjectURL(profileImage) : "";
 
-  
   const onSubmit = async (data: registerFormValues) => {
     const formData = appendDataToFormData(data);
 
@@ -390,8 +387,4 @@ export default function Register() {
       </Box>
     </>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 29b42a6 (first step in register)
