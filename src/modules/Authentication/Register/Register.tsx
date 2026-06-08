@@ -12,6 +12,10 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { AuthAPI } from "../../../api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import type { AxiosError } from "axios";
 
 export interface registerFormValues {
   userName: string;
@@ -25,6 +29,7 @@ export interface registerFormValues {
 }
 
 export default function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -33,20 +38,51 @@ export default function Register() {
     register,
     formState: { errors },
     handleSubmit,
-    watch
-  } = useForm<registerFormValues>();
-  const password = watch("password");
-  const onSubmit = async (data: registerFormValues) => {
-    try{
-      //  const response = await 
-    }catch(error){
+    watch,
+  } = useForm<registerFormValues>({
+    mode: "onSubmit",
+  });
 
+  const password = watch("password");
+
+  const appendDataToFormData = (data: registerFormValues) => {
+    const formData = new FormData();
+
+    formData.append("userName", data.userName);
+    formData.append("email", data.email);
+    formData.append("country", data.country);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("role", "user");
+
+    if (data.profileImage && data.profileImage.length > 0) {
+      formData.append("profileImage", data.profileImage[0]);
+    }
+    return formData;
+  };
+
+  const imagePreview = profileImage? URL.createObjectURL(profileImage) : "";
+  
+  const onSubmit = async (data: registerFormValues) => {
+    const formData = appendDataToFormData(data);
+
+    try {
+      const response = await AuthAPI.Register(formData);
+      toast.success(response.data.message);
+      navigate("/auth/login");
+      console.log(response);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(
+        err.response?.data?.message || "Registration failed. Please try again.",
+      );
     }
   };
 
   return (
     <>
-      <Box sx={{ width: "100%", position: "relative" }}>
+      <Box sx={{ position: "relative" }}>
         <Typography
           sx={{
             fontWeight: "bold",
@@ -78,9 +114,15 @@ export default function Register() {
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <InputLabel
             htmlFor="profileImage"
-            sx={{ position: "absolute", top: "50px", right: "10px", cursor: "pointer" }}
+            sx={{
+              position: "absolute",
+              top: "50px",
+              right: "10px",
+              cursor: "pointer",
+            }}
           >
-            <IconButton component={"span"}
+            <IconButton
+              component={"span"}
               sx={{
                 position: "absolute",
                 zIndex: 1,
@@ -91,7 +133,7 @@ export default function Register() {
             >
               <CameraAltIcon />
             </IconButton>
-            <Avatar alt="" src="" sx={{ width: 80, height: 80 }} />
+            <Avatar alt="" src={imagePreview} sx={{ width: 80, height: 80 }} />
             <Box
               component={"div"}
               sx={{
@@ -115,7 +157,16 @@ export default function Register() {
             sx={{ display: "none" }}
             error={!!errors?.profileImage}
             helperText={errors?.profileImage?.message}
-            {...register("profileImage", { required: "Profile image is required" })}
+            {...register("profileImage", {
+              required: "Profile image is required",
+              onChange: (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setProfileImage(file);
+                  
+                }
+              },
+            })}
           />
 
           <InputLabel htmlFor="userName" className="form-label">
@@ -314,13 +365,14 @@ export default function Register() {
               helperText={errors?.confirmPassword?.message}
               {...register("confirmPassword", {
                 required: "Confirm Password is required",
-                validate: (value) => 
-                  value === password || 'passwords do not match'
+                validate: (value) =>
+                  value === password || "passwords do not match",
               })}
             />
           </Box>
 
           <Button
+            type="submit"
             sx={{
               my: 3,
               backgroundColor: "#3252DF",

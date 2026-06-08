@@ -82,6 +82,7 @@ export default function AuthContext() {
             flexDirection: "column",
             justifyContent: "center",
             px: { xs: 2, md: 8 },
+            mt: 5
           }}
         >
 
