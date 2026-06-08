@@ -15,6 +15,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export interface LoginFormValues {
   email: string;
@@ -22,6 +23,7 @@ export interface LoginFormValues {
 }
 export default function Login() {
   const [showPassword , setShowPassword] = useState(false);
+  const [isLoading , setIsLoading] = useState(false);
 
   const {register,handleSubmit,formState: { errors }} = useForm<LoginFormValues>();
 
@@ -34,6 +36,7 @@ export default function Login() {
   const { saveUserData } = authContext;
 
   const onSubmit = async(data : LoginFormValues)=>{
+    setIsLoading(true)
     try {
       const response = await AuthAPI.Login(data);
       const responseToken = response?.data?.data?.token;
@@ -49,11 +52,14 @@ export default function Login() {
         navigate("/");
       }
     } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message);
+      }
+    }finally{
+      setIsLoading(false)
     }
   }
-  }
+
   return (
     <>
       <Box>
@@ -139,7 +145,9 @@ export default function Login() {
           <Box sx={{display:'flex', justifyContent:'end', mt:1}}>
             <Link to="/auth/forget-pass" style={{textDecoration:'none' , color:'#4D4D4D' , fontSize:'12px'}}>Forgot Password?</Link>
           </Box>
-           <Button type="submit" variant="contained" sx={{width:'100%',bgcolor:'#3252DF',p:2,mt:5}}>Login</Button>
+           <Button type="submit" variant="contained" sx={{width:'100%',bgcolor:'#3252DF',p:2,mt:5}} disabled={isLoading}>
+            {isLoading? <CircularProgress size="30px" aria-label="Loading…" /> : "Login"}
+          </Button>
         </Box>
       </Box>
     </>
