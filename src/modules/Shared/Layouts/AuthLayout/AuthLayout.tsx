@@ -62,13 +62,17 @@ export default function AuthContext() {
   return (
     <Box
       sx={{
-        height: "100dvh",
+        height: "100vh",
         overflow: "hidden",
-        bgcolor: "#fff",
+        bgcolor: "#FFF",
         p: 2,
         boxSizing: "border-box",
       }}
     >
+      <Typography variant="h5" sx={{position: "fixed",top: 25,left: 25,fontWeight: 500}}>
+        <Box component="span" sx={{ color: "#365CF5" }}>Stay</Box>
+        <Box component="span" sx={{ color: "black" }}>cation.</Box>
+      </Typography>
       <Grid container sx={{ height: "100%" }}>
         <Grid
           size={{ xs: 12, md: 6 }}
@@ -80,10 +84,11 @@ export default function AuthContext() {
             px: { xs: 2, md: 8 },
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, flexShrink: 0}}>
-            <Box component="span" sx={{ color: "#365CF5"}}>Stay</Box>
-            <Box component="span" sx={{ color: "black"}}>cation.</Box>
-          </Typography>
+
+          {/* // <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, flexShrink: 0}}>
+          //   <Box component="span" sx={{ color: "#365CF5"}}>Stay</Box>
+          //   <Box component="span" sx={{ color: "black"}}>cation.</Box>
+          // </Typography> */}
 
           <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1, mx: "auto"}}>
             <Outlet />
