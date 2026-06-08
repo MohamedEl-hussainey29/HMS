@@ -82,9 +82,16 @@ export default function AuthContext() {
             flexDirection: "column",
             justifyContent: "center",
             px: { xs: 2, md: 8 },
+            mt: 5
           }}
         >
-          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1}}>
+
+          {/* // <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, flexShrink: 0}}>
+          //   <Box component="span" sx={{ color: "#365CF5"}}>Stay</Box>
+          //   <Box component="span" sx={{ color: "black"}}>cation.</Box>
+          // </Typography> */}
+
+          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1, mx: "auto"}}>
             <Outlet />
           </Box>
         </Grid>
