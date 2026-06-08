@@ -63,6 +63,7 @@ export default function Register() {
   };
 
   const imagePreview = profileImage? URL.createObjectURL(profileImage) : "";
+
   
   const onSubmit = async (data: registerFormValues) => {
     const formData = appendDataToFormData(data);
@@ -82,7 +83,9 @@ export default function Register() {
 
   return (
     <>
-      <Box sx={{ position: "relative" }}>
+
+      <Box sx={{ position: "relative" , mt : 5}}>
+
         <Typography
           sx={{
             fontWeight: "bold",
@@ -387,4 +390,8 @@ export default function Register() {
       </Box>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 29b42a6 (first step in register)
