@@ -84,7 +84,7 @@ export default function AuthContext() {
             px: { xs: 2, md: 8 },
           }}
         >
-          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1,}}>
+          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1}}>
             <Outlet />
           </Box>
         </Grid>
