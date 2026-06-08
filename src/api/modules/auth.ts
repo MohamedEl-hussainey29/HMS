@@ -7,7 +7,6 @@ export const Login = (data: LoginFormValues)=>{
 }
 
 
-export const Register = (data: FormData)=>{
+export const Register = (data: FormData) => {
     return axiosClient.post("/portal/users", data);
-
 }

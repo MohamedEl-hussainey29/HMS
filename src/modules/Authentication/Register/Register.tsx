@@ -38,8 +38,11 @@ export default function Register() {
     register,
     formState: { errors },
     handleSubmit,
-    watch  
-  } = useForm<registerFormValues>();
+    watch,
+  } = useForm<registerFormValues>({
+    mode: "onSubmit",
+  });
+
 
   const password = watch("password");
 
