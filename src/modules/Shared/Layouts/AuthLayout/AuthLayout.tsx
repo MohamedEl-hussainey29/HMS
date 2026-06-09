@@ -63,7 +63,10 @@ export default function AuthContext() {
     <Box
       sx={{
         height: "100vh",
-        overflow: "hidden",
+        overflow: {
+          xs : 'auto',
+          md : 'hidden'
+        },
         bgcolor: "#fff",
         p: 2,
         boxSizing: "border-box",

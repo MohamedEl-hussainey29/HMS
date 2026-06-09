@@ -16,6 +16,7 @@ import { AuthAPI } from "../../../api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import type { AxiosError } from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export interface registerFormValues {
   userName: string;
@@ -33,6 +34,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -42,7 +44,6 @@ export default function Register() {
   } = useForm<registerFormValues>({
     mode: "onSubmit",
   });
-
 
   const password = watch("password");
 
@@ -63,11 +64,11 @@ export default function Register() {
     return formData;
   };
 
-  const imagePreview = profileImage? URL.createObjectURL(profileImage) : "";
+  const imagePreview = profileImage ? URL.createObjectURL(profileImage) : "";
 
   const onSubmit = async (data: registerFormValues) => {
     const formData = appendDataToFormData(data);
-
+    setIsLoading(true);
     try {
       const response = await AuthAPI.Register(formData);
       toast.success(response.data.message);
@@ -78,12 +79,13 @@ export default function Register() {
       toast.error(
         err.response?.data?.message || "Registration failed. Please try again.",
       );
+    } finally{
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-
       <Box sx={{ position: "relative" , mt : 5}}>
 
         <Typography
@@ -166,7 +168,6 @@ export default function Register() {
                 const file = e.target.files?.[0];
                 if (file) {
                   setProfileImage(file);
-                  
                 }
               },
             })}
@@ -375,16 +376,25 @@ export default function Register() {
           </Box>
 
           <Button
+            disabled={isLoading}
             type="submit"
             sx={{
-              my: 3,
+              my: 4,
               backgroundColor: "#3252DF",
               "&:hover": { backgroundColor: "#405dde" },
               color: "white",
+
             }}
             fullWidth
           >
-            Sign up
+            {isLoading ? (
+              <Box sx={{color: 'white'}}>
+                <CircularProgress aria-label="Loading…" size={"30px"} sx={{mr : 2}}  /> Signing
+                up...
+              </Box>
+            ) : (
+              "Sign up"
+            )}
           </Button>
         </Box>
       </Box>
