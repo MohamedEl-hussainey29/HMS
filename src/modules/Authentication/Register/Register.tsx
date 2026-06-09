@@ -84,7 +84,7 @@ export default function Register() {
 
   return (
     <>
-      <Box sx={{ position: "relative" , mt : 3}}>
+      <Box sx={{ position: "relative"}}>
 
         <Typography
           sx={{
@@ -205,7 +205,7 @@ export default function Register() {
           />
 
           <Grid container spacing={2} sx={{ my: "15px" }}>
-            <Grid size={{ md: 6 }}>
+            <Grid size={{ md: 6 , xs: 12 }}>
               <InputLabel htmlFor="phone" className="form-label">
                 Phone Number
               </InputLabel>
@@ -230,7 +230,7 @@ export default function Register() {
               />
             </Grid>
 
-            <Grid size={{ md: 6 }}>
+            <Grid size={{ md: 6 , xs: 12 }}>
               <InputLabel htmlFor="country" className="form-label">
                 Country
               </InputLabel>
@@ -276,7 +276,7 @@ export default function Register() {
           />
 
           <Grid container spacing={2}>
-            <Grid size={{ md: 6 }}>
+            <Grid size={{ md: 6 , xs: 12 }}>
               <Box sx={{ position: "relative" }}>
                 <IconButton
                   sx={{
@@ -330,7 +330,7 @@ export default function Register() {
                 />
               </Box>
             </Grid>
-            <Grid size={{ md: 6 }}>
+            <Grid size={{ md: 6 , xs: 12 }}>
               <Box sx={{ position: "relative" }}>
                 <IconButton
                   sx={{
