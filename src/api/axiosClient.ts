@@ -20,16 +20,15 @@ axiosClient.interceptors.request.use(
 )
 
 axiosClient.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        if (error.response) {
-            if (error.response?.status === 401 && window.location.pathname !== "/auth/login" && window.location.pathname !== "/auth") { 
-                localStorage.removeItem("token");
-                window.location.href = "/auth/login";
-            }
-        }
+  (response) => response,
+  (error) => {
+    const isAuthPage = window.location.pathname.startsWith("/auth");
+
+    if (error.response?.status === 401 && !isAuthPage ) {
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+    }
+
         return Promise.reject(error);
     }
 );
