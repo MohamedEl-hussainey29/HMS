@@ -1,19 +1,14 @@
-
-import axios from "axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {Box,Button,CircularProgress,IconButton,InputAdornment,TextField,Typography,} from "@mui/material";
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { AuthAPI } from "../../../api";
 
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
-
-interface ResetPasswordFormData {
+export interface ResetPasswordFormData {
   email: string;
   seed: string;
   password: string;
@@ -23,6 +18,9 @@ interface ResetPasswordFormData {
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword , setShowPassword] = useState(false);
+  const [showConfirmPassword , setShowConfirmPassword] = useState(false);
+
 
   const {
     register,
@@ -34,20 +32,13 @@ export default function ResetPassword() {
   const password = watch("password");
 
   const onSubmit = async (data: ResetPasswordFormData) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
-      await axios.post(
-        "https://upskilling-egypt.com:3000/api/v0/admin/users/reset-password",
-        data
-      );
-
-      toast.success("Password reset successfully");
+      const response = await AuthAPI.ResetPassword(data);
+      toast.success(response?.data?.message);
       navigate("/auth/login");
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Something went wrong"
-      );
+      toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +69,7 @@ export default function ResetPassword() {
       <Typography
         variant="body2"
         sx={{
-          mb: 4,
+          mb: 2,
         }}
       >
         Back to{" "}
@@ -120,9 +111,11 @@ export default function ResetPassword() {
             },
           })}
           sx={{
-            mb: 3,
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#F5F5F5",
+            mb: 2,
+            backgroundColor: "#F5F6F8",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
             },
           }}
         />
@@ -148,9 +141,11 @@ export default function ResetPassword() {
             required: "OTP is required",
           })}
           sx={{
-            mb: 3,
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#F5F5F5",
+            mb: 2,
+            backgroundColor: "#F5F6F8",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
             },
           }}
         />
@@ -168,7 +163,7 @@ export default function ResetPassword() {
 
         <TextField
           fullWidth
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Enter new password"
           size="small"
           error={!!errors.password}
@@ -176,14 +171,30 @@ export default function ResetPassword() {
           {...register("password", {
             required: "Password is required",
             minLength: {
-              value: 6,
-              message: "Password must be at least 6 characters",
+              value: 8,
+              message: "Password must be at least 8 characters",
             },
           })}
           sx={{
-            mb: 3,
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#F5F5F5",
+            mb: 2,
+            backgroundColor: "#F5F6F8",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+          }}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
             },
           }}
         />
@@ -201,7 +212,7 @@ export default function ResetPassword() {
 
         <TextField
           fullWidth
-          type="password"
+          type={showConfirmPassword ? "text" : "password"}
           placeholder="Confirm password"
           size="small"
           error={!!errors.confirmPassword}
@@ -212,9 +223,25 @@ export default function ResetPassword() {
               value === password || "Passwords do not match",
           })}
           sx={{
-            mb: 4,
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#F5F5F5",
+            mb: 2,
+            backgroundColor: "#F5F6F8",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+          }}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
             },
           }}
         />
