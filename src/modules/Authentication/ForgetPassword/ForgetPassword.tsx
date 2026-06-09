@@ -1,5 +1,4 @@
-
-import axios from "axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,8 +11,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { AuthAPI } from "../../../api";
 
-interface ForgetPasswordFormData {
+export interface ForgetPasswordFormData {
   email: string;
 }
 
@@ -21,27 +21,16 @@ export default function ForgetPassword() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgetPasswordFormData>();
+  const {register,handleSubmit,formState: { errors }} = useForm<ForgetPasswordFormData>();
 
   const onSubmit = async (data: ForgetPasswordFormData) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
-      await axios.post(
-        "https://upskilling-egypt.com:3000/api/v0/portal/users/forgot-password",
-        data
-      );
-
-      toast.success("Request sent successfully");
+      const response = await AuthAPI.ForgetPassword(data);
+      toast.success(response?.data?.message);
       navigate("/auth/reset-pass");
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Something went wrong"
-      );
+      toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +92,6 @@ export default function ForgetPassword() {
         <TextField
           fullWidth
           placeholder="Please type here ..."
-          variant="outlined"
           size="small"
           error={!!errors.email}
           helperText={errors.email?.message}
@@ -115,9 +103,11 @@ export default function ForgetPassword() {
             },
           })}
           sx={{
-            mb: 5,
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#F5F5F5",
+            marginTop: '4px',
+            backgroundColor: "#F5F6F8",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
             },
           }}
         />
@@ -128,6 +118,7 @@ export default function ForgetPassword() {
           variant="contained"
           disabled={isLoading}
           sx={{
+            mt: 3,
             py: 1.5,
             textTransform: "none",
             borderRadius: 2,
