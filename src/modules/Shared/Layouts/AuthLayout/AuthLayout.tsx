@@ -89,7 +89,7 @@ export default function AuthContext() {
           }}
         >
 
-          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1, mx: 'auto'}}>
+          <Box sx={{width: "100%",maxWidth: 500,flexShrink: 1, mx: 'auto'}}>
 
             <Outlet />
           </Box>
