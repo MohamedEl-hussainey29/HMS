@@ -76,9 +76,7 @@ export default function Register() {
       console.log(response);
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(
-        err.response?.data?.message || "Registration failed. Please try again.",
-      );
+      toast.error(err.response?.data?.message || "Registration failed. Please try again.");
     } finally{
       setIsLoading(false);
     }
@@ -86,7 +84,7 @@ export default function Register() {
 
   return (
     <>
-      <Box sx={{ position: "relative" , mt : 5}}>
+      <Box sx={{ position: "relative" , mt : 3}}>
 
         <Typography
           sx={{
@@ -172,7 +170,19 @@ export default function Register() {
               },
             })}
           />
-
+          {errors.profileImage && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{
+                display: "block",
+                mt: 1,
+                textAlign: "end",
+              }}
+            >
+              {errors.profileImage.message}
+            </Typography>
+          )}
           <InputLabel htmlFor="userName" className="form-label">
             User Name
           </InputLabel>
@@ -265,121 +275,126 @@ export default function Register() {
             {...register("email", { required: "Email is required" })}
           />
 
-          <Box sx={{ position: "relative" }}>
-            <IconButton
-              sx={{
-                position: "absolute",
-                right: "10px",
-                top: "75%",
-                transform: "translateY(-50%)",
-                zIndex: 1,
-              }}
-            >
-              {showPassword ? (
-                <Box
-                  component={"span"}
-                  onClick={() => setShowPassword(!showPassword)}
+          <Grid container spacing={2}>
+            <Grid size={{ md: 6 }}>
+              <Box sx={{ position: "relative" }}>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "75%",
+                    transform: "translateY(-50%)",
+                    zIndex: 1,
+                  }}
                 >
-                  <VisibilityOffIcon />
-                </Box>
-              ) : (
-                <Box
-                  component={"span"}
-                  onClick={() => setShowPassword(!showPassword)}
+                  {showPassword ? (
+                    <Box
+                      component={"span"}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <VisibilityOffIcon />
+                    </Box>
+                  ) : (
+                    <Box
+                      component={"span"}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {" "}
+                      <VisibilityIcon />{" "}
+                    </Box>
+                  )}
+                </IconButton>
+                <InputLabel
+                  htmlFor="password"
+                  className="form-label"
+                  sx={{ mt: "15px" }}
                 >
-                  {" "}
-                  <VisibilityIcon />{" "}
-                </Box>
-              )}
-            </IconButton>
-            <InputLabel
-              htmlFor="password"
-              className="form-label"
-              sx={{ mt: "15px" }}
-            >
-              Password
-            </InputLabel>
-            <TextField
-              type={showPassword ? "text" : "password"}
-              size={"small"}
-              fullWidth
-              id="password"
-              sx={{
-                backgroundColor: "#F5F6F8",
-                borderRadius: "4px",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-              }}
-              placeholder=" type here..."
-              error={!!errors?.password}
-              helperText={errors?.password?.message}
-              {...register("password", { required: "Password is required" })}
-            />
-          </Box>
-
-          <Box sx={{ position: "relative" }}>
-            <IconButton
-              sx={{
-                position: "absolute",
-                right: "10px",
-                top: "75%",
-                transform: "translateY(-50%)",
-                zIndex: 1,
-              }}
-            >
-              {showConfirmPassword ? (
-                <Box
-                  component={"span"}
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  Password
+                </InputLabel>
+                <TextField
+                  type={showPassword ? "text" : "password"}
+                  size={"small"}
+                  fullWidth
+                  id="password"
+                  sx={{
+                    backgroundColor: "#F5F6F8",
+                    borderRadius: "4px",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                  placeholder=" type here..."
+                  error={!!errors?.password}
+                  helperText={errors?.password?.message}
+                  {...register("password", { required: "Password is required" })}
+                />
+              </Box>
+            </Grid>
+            <Grid size={{ md: 6 }}>
+              <Box sx={{ position: "relative" }}>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "75%",
+                    transform: "translateY(-50%)",
+                    zIndex: 1,
+                  }}
                 >
-                  <VisibilityOffIcon />
-                </Box>
-              ) : (
-                <Box
-                  component={"span"}
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  {showConfirmPassword ? (
+                    <Box
+                      component={"span"}
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      <VisibilityOffIcon />
+                    </Box>
+                  ) : (
+                    <Box
+                      component={"span"}
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {" "}
+                      <VisibilityIcon />{" "}
+                    </Box>
+                  )}
+                </IconButton>
+                <InputLabel
+                  htmlFor="confirmPassword"
+                  className="form-label"
+                  sx={{ mt: "15px" }}
                 >
-                  {" "}
-                  <VisibilityIcon />{" "}
-                </Box>
-              )}
-            </IconButton>
-            <InputLabel
-              htmlFor="confirmPassword"
-              className="form-label"
-              sx={{ mt: "15px" }}
-            >
-              Confirm Password
-            </InputLabel>
-            <TextField
-              type={showConfirmPassword ? "text" : "password"}
-              size={"small"}
-              fullWidth
-              id="confirmPassword"
-              sx={{
-                borderRadius: "4px",
-                backgroundColor: "#F5F6F8",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-              }}
-              placeholder=" type here..."
-              error={!!errors?.confirmPassword}
-              helperText={errors?.confirmPassword?.message}
-              {...register("confirmPassword", {
-                required: "Confirm Password is required",
-                validate: (value) =>
-                  value === password || "passwords do not match",
-              })}
-            />
-          </Box>
+                  Confirm Password
+                </InputLabel>
+                <TextField
+                  type={showConfirmPassword ? "text" : "password"}
+                  size={"small"}
+                  fullWidth
+                  id="confirmPassword"
+                  sx={{
+                    borderRadius: "4px",
+                    backgroundColor: "#F5F6F8",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                  placeholder=" type here..."
+                  error={!!errors?.confirmPassword}
+                  helperText={errors?.confirmPassword?.message}
+                  {...register("confirmPassword", {
+                    required: "Confirm Password is required",
+                    validate: (value) =>
+                      value === password || "passwords do not match",
+                  })}
+                />
+              </Box>
+            </Grid>
+          </Grid>
 
           <Button
             disabled={isLoading}
             type="submit"
             sx={{
-              my: 4,
+              my: 2,
               backgroundColor: "#3252DF",
               "&:hover": { backgroundColor: "#405dde" },
               color: "white",
