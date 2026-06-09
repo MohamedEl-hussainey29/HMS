@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CircularProgress from "@mui/material/CircularProgress"; // إضافة مؤشر تحميل صغير
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,7 +26,7 @@ export default function ChangePassword() {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // حالة التحميل لحماية الزر
+  const [isLoading, setIsLoading] = useState(false);
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<changePasswordFormValues>({
     mode: "onChange"
@@ -68,7 +68,7 @@ export default function ChangePassword() {
   return (
     <Box>
       <Stack spacing={3}>
-        <Typography variant="h4" fontWeight="bold">Change Password</Typography>
+        <Typography variant="h4" sx={{fontWeight:"bold"}}>Change Password</Typography>
         <Typography sx={{ color: '#6F7E8C' }}>
           Update your account password in just a few clicks.
         </Typography>
@@ -187,7 +187,7 @@ export default function ChangePassword() {
         <Button
           type="submit"
           variant="contained"
-          disabled={isLoading} // تعطيل الزر أثناء إرسال الطلب للسيرفر
+          disabled={isLoading}
           sx={{
             width: '100%',
             bgcolor: '#3252DF',
