@@ -10,12 +10,12 @@ export default function AdminLayout() {
   return (
     <>
       <Box >
-        <Grid sx={{display:"flex" , overflow:"hidden" , height : 'calc(100vh - 70px)'}}>
-          <Box sx={{bgcolor:'blue',height: '100%', flexShrink: 0}}>
+        <Grid sx={{display:"flex" , overflow:"hidden" , height : "100vh"}}>
+          <Box sx={{bgcolor:'blue',height: '100%', flexShrink: 0 }}>
             <SideBar/>
           </Box>
 
-          <Box sx={{overflow:'auto'}} >
+          <Box sx={{flex: 1, minWidth: 0, overflow:'auto',px: 2}} >
             <NavBar/>
             <Outlet/>
           </Box>
