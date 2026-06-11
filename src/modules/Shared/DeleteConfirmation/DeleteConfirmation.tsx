@@ -68,7 +68,7 @@ export default function DeleteConfirmation({isLoading,open,handleClose,onDelete,
               are you sure you want to delete <Box component="span" sx={{color:'#203FC7'}} >{itemData?.name}</Box> ? if you are sure just click on delete it
             </Typography>
           </Box>
-          <DialogActions sx={{justifyContent:{xs: "center" , md:"end"}}}>
+          <DialogActions sx={{justifyContent:{xs: "space-evenly" , md:"end"}}}>
               <Button
                 variant='contained'
                 size='large'
