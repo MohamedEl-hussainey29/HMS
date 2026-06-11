@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
@@ -14,7 +13,7 @@ import Avatar from "@mui/material/Avatar";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { AuthAPI } from "../../../api";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { AxiosError } from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -104,9 +103,8 @@ export default function Register() {
           If you already have an account register <br />
           You can{" "}
           <Link
-            href="/auth/login"
-            underline="hover"
-            sx={{ color: "#EB5148", fontWeight: "bold" }}
+            to="/auth/login"
+            style={{ color: "#EB5148", fontWeight: "bold" , textDecoration:'none'}}
           >
             {" "}
             Login here !{" "}

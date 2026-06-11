@@ -1,186 +1,219 @@
-import { Box, Button, Grid, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
-import { useState } from "react";
+import {Box,Button,Grid,IconButton,ListItemIcon,Menu,MenuItem,Tooltip,Typography} from "@mui/material";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { useCallback, useState } from "react";
 import Filters from "../../../Shared/Filters/Filters";
+import DataTable, {type TableColumn,} from "../../../Shared/DataTable/DataTable";
+import { FacilitiesAPI } from "../../../../api";
+import useGetData from "../../../../hooks/useGetData";
 
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#E2E5EB",
-    color: theme.palette.common.black,
-    paddingTop: "25px",
-    paddingBottom: "25px",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density';
-  label: string;
-  minWidth?: number;
-  align?: 'right';
-  format?: (value: number) => string;
-}
-
-const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
-  },
-];
-
-interface Data {
+interface Facility {
+  _id: string;
   name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
+  createdBy: {
+    _id: string;
+    userName: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+interface FacilitiesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    facilities: Facility[];
+    totalCount: number;
+  };
 }
 
-function createData(
-  name: string,
-  code: string,
-  population: number,
-  size: number,
-): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
 export default function FacilitiesList() {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
+  const fetchFacilities = useCallback(() => {
+    return FacilitiesAPI.getAllFacilities({
+      page: page + 1,
+      size: rowsPerPage,
+    });
+  }, [page, rowsPerPage]);
+
+  const { data, isLoading, error } = useGetData<FacilitiesResponse>(
+      fetchFacilities,
+      [page, rowsPerPage]
+    );
+
+  const handleChangePage = (
+    _: unknown,
+    newPage: number
+  ) => {setPage(newPage)};
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(Number(event.target.value))
     setPage(0);
   };
 
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>,facility: Facility) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedFacility(facility);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const columns: TableColumn<Facility>[] = [
+    {
+      id: "name",
+      label: "Name",
+      render: (facility) => facility.name,
+    },
+    {
+      id: "createdBy",
+      label: "Created By",
+      render: (facility) =>
+        facility.createdBy.userName,
+    },
+    {
+      id: "createdAt",
+      label: "Creation Date",
+      align: "right",
+      render: (facility) =>
+        new Date(
+          facility.createdAt
+        ).toLocaleDateString(),
+    },
+    {
+      id: "updatedAt",
+      label: "Modification Date",
+      align: "right",
+      render: (facility) =>
+        new Date(
+          facility.updatedAt
+        ).toLocaleDateString(),
+    },
+    {
+      id: "options",
+      label: "",
+      align: "right",
+      render: (facility) => (
+        <Tooltip title="Options">
+          <IconButton
+            size="small"
+            onClick={(e) =>handleMenuClick(e, facility)}
+          >
+            <MoreHorizIcon />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+  ];
+
   return (
-    <>
-      <Box sx={{ width: "100%", mt: 2 }}>
-        <Box sx={{mb: 2}}>
-          <Grid container spacing={2} sx={{ alignItems: "center" }}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="h6">Facilities Table Details</Typography>
-              <Typography >You can check all details</Typography>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }} sx={{display: "flex", justifyContent: {xs: "stretch", md: "flex-end"}}}>
-              <Button
-                variant="contained"
-                size="large"
-                fullWidth
-                sx={{ maxWidth: { md: 200 }, bgcolor: "#203FC7", textTransform: "capitalize"}}
-              >
-                Add New Facility
-              </Button>
-            </Grid>
+    <Box sx={{ width: "100%", mt: 2 }}>
+      {/* Header */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={2} sx={{ alignItems: "center" }} >
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Typography variant="h6">
+              Facilities Table Details
+            </Typography>
+            <Typography color="text.secondary">
+              You can check all details
+            </Typography>
           </Grid>
-        </Box>
-        <Box sx={{mt: 2}}>
-          <Box>
-            <Filters showSearch={true}/>
-          </Box>
-          <Paper sx={{ width: '100%', overflow: 'hidden' , mt: 2 }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <StyledTableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        {column.label}
-                      </StyledTableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <StyledTableRow role="checkbox" tabIndex={-1} key={row.code}>
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </StyledTableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </Box>
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", justifyContent: { xs: "stretch", md: "flex-end"}}} >
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              sx={{maxWidth: { md: 220 },bgcolor: "#203FC7",textTransform:"capitalize"}}
+            >
+              Add New Facility
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
-    </>
+      {/* Filters */}
+      <Box sx={{ mb: 2 }}>
+        <Filters showSearch />
+      </Box>
+      {/* Error */}
+      {error && (
+        <Typography color="error" sx={{ mb: 2 }} >
+          {error}
+        </Typography>
+      )}
+      {/* Table */}
+      <DataTable
+        columns={columns}
+        rows={data?.data?.facilities ?? [] }
+        count={data?.data?.totalCount ?? 0}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        loading={isLoading}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
+      {/* Actions Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        id="facility-menu"
+        open={open}
+        onClose={handleMenuClose}
+        onClick={handleMenuClose}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: "visible",
+              borderRadius: "15px",
+              filter:"drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              mt: 1.5,
+              minWidth: 180,
+              "&::before": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform:
+                  "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
+            },
+          },
+        }}
+        transformOrigin={{horizontal: "right",vertical: "top"}}
+        anchorOrigin={{horizontal: "right",vertical: "bottom"}}
+      >
+        <MenuItem>
+          <ListItemIcon>
+            <VisibilityOutlinedIcon fontSize="small" sx={{color:'#203FC7'}}/>
+          </ListItemIcon> View
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <EditOutlinedIcon fontSize="small" sx={{color:'#203FC7'}}/>
+          </ListItemIcon> Edit
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <DeleteOutlinedIcon fontSize="small" sx={{color:'#203FC7'}}/>
+          </ListItemIcon> Delete
+        </MenuItem>
+      </Menu>
+    </Box>
   );
 }
