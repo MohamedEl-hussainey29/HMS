@@ -34,7 +34,7 @@ export default function Filters({showSearch = false,showTag = false,showFacility
             fullWidth
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by number ..."
+            placeholder="Search ..."
             sx={{
               "& .MuiOutlinedInput-root": {
                 height: 50,
