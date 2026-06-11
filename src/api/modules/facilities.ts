@@ -1,3 +1,4 @@
+import type { FacilityFormValues } from "../../modules/Admin/Facilities/components/FacilityData";
 import axiosClient from "../axiosClient";
 
 interface PaginationParams {
@@ -13,3 +14,15 @@ export const getAllFacilities = (params?: PaginationParams) => {
     }
   });
 };
+
+export const CreateFacility = (data: FacilityFormValues) => {
+  return axiosClient.post("/admin/room-facilities",data)
+}
+
+export const UpdateFacility = (id: string ,data: FacilityFormValues) => {
+  return axiosClient.put(`/admin/room-facilities/${id}`, data)
+}
+
+export const DeleteFacility = (id: string) => {
+  return axiosClient.delete(`/admin/room-facilities/${id}`)
+}

@@ -5,8 +5,11 @@ import DataTable, {type TableColumn} from "../../../Shared/DataTable/DataTable";
 import RowActions from "../../../Shared/RowActions/RowActions";
 import { FacilitiesAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
+import FacilityData from "./FacilityData";
+import { toast } from "react-toastify";
+import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 
-interface Facility {
+export interface Facility {
   _id: string;
   name: string;
   createdBy: {
@@ -27,6 +30,27 @@ interface FacilitiesResponse {
 export default function FacilitiesList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
+  const [deleteLoading , setDeleteLoading] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
+
+  const handleOpenForm = () => {
+    setSelectedFacility(null);
+    setOpenForm(true);
+  };
+  const handleCloseForm = () => {
+    setOpenForm(false);
+  };
+
+  const handleOpenDelete = (facility: Facility) => {
+    setSelectedFacility(facility);
+    setOpenDelete(true);
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
 
   const fetchFacilities = useCallback(() => {
     return FacilitiesAPI.getAllFacilities({
@@ -35,7 +59,7 @@ export default function FacilitiesList() {
     });
   }, [page, rowsPerPage]);
 
-  const { data, isLoading, error } = useGetData<FacilitiesResponse>(
+  const { data, isLoading, error , refetch } = useGetData<FacilitiesResponse>(
     fetchFacilities,
     [page, rowsPerPage],
   );
@@ -56,11 +80,22 @@ export default function FacilitiesList() {
   };
 
   const handleEditFacility = (facility: Facility) => {
-    console.log("Edit Facility", facility);
-  };
+    setSelectedFacility(facility);
+    setOpenForm(true);
+};
 
-  const handleDeleteFacility = (facility: Facility) => {
-    console.log("Delete Facility", facility);
+  const handleDeleteFacility = async(id: string) => {
+    setDeleteLoading(true);
+    try {
+      await FacilitiesAPI.DeleteFacility(id);
+      toast.success("Facility is deleted successfully");
+      refetch();
+      handleCloseDelete();
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setDeleteLoading(false);
+    }
   };
 
   const columns: TableColumn<Facility>[] = [
@@ -97,7 +132,7 @@ export default function FacilitiesList() {
           showDelete
           onView={() => handleViewFacility(facility)}
           onEdit={() => handleEditFacility(facility)}
-          onDelete={() => handleDeleteFacility(facility)}
+          onDelete={() => handleOpenDelete(facility)}
         />
       ),
     },
@@ -121,12 +156,14 @@ export default function FacilitiesList() {
               size="large"
               fullWidth
               sx={{maxWidth: { md: 220 },bgcolor: "#203FC7",textTransform: "capitalize"}}
+              onClick={handleOpenForm}
             >
               Add New Facility
             </Button>
           </Grid>
         </Grid>
       </Box>
+      <FacilityData open={openForm} handleClose={handleCloseForm} refetchData={refetch} facility={selectedFacility}/>
 
       {/* Filters */}
       <Box sx={{ mb: 2 }}>
@@ -151,6 +188,15 @@ export default function FacilitiesList() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <DeleteConfirmation 
+        isLoading={deleteLoading} 
+        open={openDelete} 
+        handleClose={handleCloseDelete} 
+        onDelete={handleDeleteFacility}
+        item="Facility"
+        itemData={selectedFacility}
+        />
     </Box>
   );
 }
