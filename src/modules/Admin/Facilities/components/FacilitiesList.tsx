@@ -8,6 +8,7 @@ import useGetData from "../../../../hooks/useGetData";
 import FacilityData from "./FacilityData";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
+import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
 
 export interface Facility {
   _id: string;
@@ -34,6 +35,7 @@ export default function FacilitiesList() {
   const [deleteLoading , setDeleteLoading] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openView, setOpenView] = useState(false);
 
 
   const handleOpenForm = () => {
@@ -76,7 +78,8 @@ export default function FacilitiesList() {
   };
 
   const handleViewFacility = (facility: Facility) => {
-    console.log("View Facility", facility);
+    setSelectedFacility(facility);
+    setOpenView(true);
   };
 
   const handleEditFacility = (facility: Facility) => {
@@ -196,6 +199,48 @@ export default function FacilitiesList() {
         onDelete={handleDeleteFacility}
         item="Facility"
         itemData={selectedFacility}
+        />
+
+        <ViewDetails
+          open={openView}
+          handleClose={() => setOpenView(false)}
+          title="Facility Details"
+          fields={[
+            {
+              label: "Name",
+              value: selectedFacility?.name,
+            },
+            {
+              label: "ID",
+              value: selectedFacility?._id,
+            },
+            {
+              label: "Created By (UserName)",
+              value:
+                selectedFacility?.createdBy.userName,
+            },
+            {
+              label: "Created By (ID)",
+              value:
+                selectedFacility?.createdBy._id,
+            },
+            {
+              label: "Created At",
+              value: selectedFacility?.createdAt
+                ? new Date(
+                    selectedFacility.createdAt
+                  ).toLocaleDateString()
+                : "",
+            },
+            {
+              label: "Modified At",
+              value: selectedFacility?.updatedAt
+                ? new Date(
+                    selectedFacility.updatedAt
+                  ).toLocaleDateString()
+                : "",
+            },
+          ]}
         />
     </Box>
   );
