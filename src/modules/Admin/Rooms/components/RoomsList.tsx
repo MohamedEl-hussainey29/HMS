@@ -111,6 +111,7 @@ export default function RoomsList() {
         {
           id: "images",
           label: "Image",
+          align: "center",
           render: (room) =>
             room.images?.[0] ? (
               <Box

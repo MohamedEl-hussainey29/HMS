@@ -9,6 +9,7 @@ interface Field {
   value?: string | number | boolean | null | undefined;
   images?: string[];
   list?: string[];
+  profileImage?: string;
 }
 
 interface ViewDetailsProps {
