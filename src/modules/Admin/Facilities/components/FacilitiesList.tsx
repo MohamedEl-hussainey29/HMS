@@ -113,24 +113,25 @@ export default function FacilitiesList() {
     {
       id: "createdBy",
       label: "Created By",
+      align: "center",
       render: (facility) => facility.createdBy.userName,
     },
     {
       id: "createdAt",
       label: "Creation Date",
-      align: "right",
+      align: "center",
       render: (facility) => new Date(facility.createdAt).toLocaleDateString(),
     },
     {
       id: "updatedAt",
       label: "Modification Date",
-      align: "right",
+      align: "center",
       render: (facility) => new Date(facility.updatedAt).toLocaleDateString(),
     },
     {
       id: "options",
       label: "",
-      align: "right",
+      align: "center",
       render: (facility) => (
         <RowActions
           showView
