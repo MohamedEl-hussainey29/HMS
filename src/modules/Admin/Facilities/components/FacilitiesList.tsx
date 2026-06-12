@@ -9,6 +9,7 @@ import FacilityData from "./FacilityData";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
+import axios from "axios";
 
 export interface Facility {
   _id: string;
@@ -85,7 +86,7 @@ export default function FacilitiesList() {
   const handleEditFacility = (facility: Facility) => {
     setSelectedFacility(facility);
     setOpenForm(true);
-};
+  };
 
   const handleDeleteFacility = async(id: string) => {
     setDeleteLoading(true);
@@ -95,7 +96,9 @@ export default function FacilitiesList() {
       refetch();
       handleCloseDelete();
     } catch (error) {
-      console.log(error)
+        if (axios.isAxiosError(error)) {
+            toast.error(error.response?.data?.message);
+          }
     }finally{
       setDeleteLoading(false);
     }

@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Box, IconButton, Stack, useMediaQuery } from '@mui/material'; // استوردنا الـ Stack هنا
-import AuthContext from '../Layouts/AuthLayout/AuthLayout';
 
 // MUI Icons
 import HomeIcon from '@mui/icons-material/Home';
@@ -17,6 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import MenuIcon from '@mui/icons-material/Menu';
+import { AuthContext } from '../../../context/AuthContext';
 export default function SideBar() {
   const navigate = useNavigate();
   const location = useLocation();

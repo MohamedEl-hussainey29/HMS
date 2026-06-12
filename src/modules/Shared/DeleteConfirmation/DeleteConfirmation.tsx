@@ -25,7 +25,8 @@ interface DeleteConfirmationProps {
   item: string;
   itemData: {
     _id: string;
-    name: string;
+    name?: string;
+    roomNumber?: string;
   } | null;
 }
 
@@ -65,7 +66,7 @@ export default function DeleteConfirmation({isLoading,open,handleClose,onDelete,
             <Box component="img" src={deleteImg} alt="deleteImg" sx={{width:"100px" ,  height:"100px", objectFit:"contain" , my: 5}} />
             <Typography variant='h5' sx={{mb:0 , color: '#494949', fontWeight:700}}>Delete This {item}?</Typography>
             <Typography variant='subtitle1' sx={{color:'rgba(73, 73, 73, 0.6)'}}>
-              are you sure you want to delete <Box component="span" sx={{color:'#203FC7'}} >{itemData?.name}</Box> ? if you are sure just click on delete it
+              are you sure you want to delete <Box component="span" sx={{color:'#203FC7'}} >{itemData?.name || itemData?.roomNumber}</Box> ? if you are sure just click on delete it
             </Typography>
           </Box>
           <DialogActions sx={{justifyContent:{xs: "space-evenly" , md:"end"}}}>

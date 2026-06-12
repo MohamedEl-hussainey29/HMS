@@ -14,3 +14,7 @@ export const getAllRooms = (params?: PaginationParams) => {
     }
   });
 };
+
+export const DeleteRoom = (id: string) => {
+  return axiosClient.delete(`/admin/rooms/${id}`)
+}
