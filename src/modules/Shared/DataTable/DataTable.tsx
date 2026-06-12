@@ -24,13 +24,14 @@ interface DataTableProps<T> {
   loading?: boolean;
 }
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#E2E5EB",
-    color: theme.palette.common.black,
+    color: "#1F263E",
     paddingTop: "25px",
     paddingBottom: "25px",
-    fontWeight: 600,
+    fontWeight: 500,
+    fontSize: "16px",
 
     "&:first-of-type": {
       borderTopLeftRadius: "12px",

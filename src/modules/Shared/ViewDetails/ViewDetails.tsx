@@ -1,4 +1,4 @@
-import {Dialog,DialogTitle,DialogContent,IconButton,Typography,Box,Divider, Button} from "@mui/material";
+import {Dialog,DialogTitle,DialogContent,IconButton,Typography,Box,Divider, Button, Chip} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -157,7 +157,20 @@ const handleNext = () => {
                       <Typography>N/A</Typography>
                     )}
                   </Box>
-                ) :(
+                ) :field.label === "Status" ? (
+                  <Chip
+                    label= {field.value}
+                    sx={{
+                      px: 2,
+                      py: 0.5,
+                      borderRadius: "20px",
+                      bgcolor:
+                        field.value === "completed" ? "#E8F5E9" : "#FFF3E0",
+                      color: field.value === "completed" ? "#2E7D32" : "#ED6C02",
+                      fontWeight: 600,
+                    }}
+                  />
+                ) : (
                   <Box
                     sx={{
                       textAlign: {xs: "left",sm: "right"},
@@ -227,7 +240,7 @@ const handleNext = () => {
             <Typography sx={{color:'#FFF'}}>
               {currentIndex + 1} / {viewerImages.length}
             </Typography>
-
+            
             <Button
               variant="outlined"
               onClick={handleNext}
