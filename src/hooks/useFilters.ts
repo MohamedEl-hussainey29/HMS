@@ -36,6 +36,11 @@ export default function useFilters<T>(
         const itemStartDate = startDateField(item).split("T")[0];
         const itemEndDate = endDateField(item).split("T")[0];
 
+        //only one is selelcted
+        if (startDate && !endDate) return itemStartDate >= startDate;
+        if (!startDate && endDate) return itemEndDate <= endDate;
+
+        // both selected => overlap check
         return itemStartDate <= endDate && itemEndDate >= startDate;
       })();
 
