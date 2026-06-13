@@ -1,5 +1,6 @@
 import {Box, Paper,Skeleton,styled,Table,TableBody,TableCell,tableCellClasses,TableContainer,TableHead,TablePagination,TableRow} from "@mui/material";
 import { type ReactNode } from "react";
+import NoData from "../NoData/NoData";
 
 export interface TableColumn<T> {
   id: string;
@@ -9,6 +10,7 @@ export interface TableColumn<T> {
 }
 
 interface DataTableProps<T> {
+  item: string;
   columns: TableColumn<T>[];
   rows: T[];
   count: number;
@@ -55,6 +57,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function DataTable<T>({
+  item,
   columns,
   rows,
   count,
@@ -96,6 +99,7 @@ export default function DataTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
+              rows.length > 0 ? (
               rows.map((row, index) => (
                 <StyledTableRow key={index}>
                   {columns.map((column) => (
@@ -108,22 +112,31 @@ export default function DataTable<T>({
                   ))}
                 </StyledTableRow>
               ))
-            )}
+            ):(
+              <TableCell
+                colSpan={columns.length}
+                align="center"
+              >
+                <NoData item={item} />
+              </TableCell>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <TablePagination
+      <Box sx={{
+        display: count <= 5 ? "none" : ""
+      }}>
+        <TablePagination
         component="div"
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={onPageChange}
-        onRowsPerPageChange={
-          onRowsPerPageChange
-        }
+        onRowsPerPageChange={onRowsPerPageChange}
       />
+      </Box>
     </Paper>
   );
 }

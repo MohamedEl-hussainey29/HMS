@@ -25,16 +25,16 @@ export default function ViewDetails({open,handleClose,title,fields}: ViewDetails
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrev = () => {
-  setCurrentIndex((prev) =>
-    prev === 0 ? viewerImages.length - 1 : prev - 1
-  );
-};
+    setCurrentIndex((prev) =>
+      (prev - 1 + viewerImages.length) % viewerImages.length
+    );
+  };
 
-const handleNext = () => {
-  setCurrentIndex((prev) =>
-    prev === viewerImages.length - 1 ? 0 : prev + 1
-  );
-};
+  const handleNext = () => {
+    setCurrentIndex((prev) =>
+      (prev + 1) % viewerImages.length
+    );
+  };
 
   return (
     <>

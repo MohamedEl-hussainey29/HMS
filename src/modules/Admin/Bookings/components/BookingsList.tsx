@@ -98,59 +98,59 @@ export default function BookingsList() {
   };
 
   const columns: TableColumn<Booking>[] = [
-      {
-        id: "roomNumber",
-        label: "Room Number",
-        render: (booking) => booking.room?.roomNumber ?? "N/A",
-      },
-      {
-        id: "status",
-        label: "Status",
-        align: "center",
-        render: (booking) => (
-          <Chip
-            label={booking.status}
-            size="small"
-            sx={{
-              fontWeight: 600,
-              bgcolor: booking.status === "completed" ? "#E8F5E9" : "#FFF3E0",
-              color: booking.status === "completed" ? "#2E7D32" : "#ED6C02",
-            }}
-          />
-        ),
-      },
-      {
-        id: "price",
-        label: "Price ($)",
-        align: "center",
-        render: (booking) => booking.totalPrice,
-      },
-      {
-        id: "startDate",
-        label: "Start Date",
-        align: "center",
-        render: (booking) => new Date(booking.startDate).toLocaleDateString(),
-      },
-      {
-        id: "endDate",
-        label: "End Date",
-        align: "center",
-        render: (booking) => new Date(booking.endDate).toLocaleDateString(),
-      },
-      {
-        id: "options",
-        label: "",
-        align: "center",
-        render: (booking) => (
-          <RowActions
-            showView
-            showDelete
-            onView={() => handleViewBooking(booking)}
-            onDelete={() => handleOpenDelete(booking)}
-          />
-        ),
-      },
-    ];
+    {
+      id: "roomNumber",
+      label: "Room Number",
+      render: (booking) => booking.room?.roomNumber ?? "N/A",
+    },
+    {
+      id: "status",
+      label: "Status",
+      align: "center",
+      render: (booking) => (
+        <Chip
+          label={booking.status}
+          size="small"
+          sx={{
+            fontWeight: 600,
+            bgcolor: booking.status === "completed" ? "#E8F5E9" : "#FFF3E0",
+            color: booking.status === "completed" ? "#2E7D32" : "#ED6C02",
+          }}
+        />
+      ),
+    },
+    {
+      id: "price",
+      label: "Price ($)",
+      align: "center",
+      render: (booking) => booking.totalPrice,
+    },
+    {
+      id: "startDate",
+      label: "Start Date",
+      align: "center",
+      render: (booking) => new Date(booking.startDate).toLocaleDateString(),
+    },
+    {
+      id: "endDate",
+      label: "End Date",
+      align: "center",
+      render: (booking) => new Date(booking.endDate).toLocaleDateString(),
+    },
+    {
+      id: "options",
+      label: "",
+      align: "center",
+      render: (booking) => (
+        <RowActions
+          showView
+          showDelete
+          onView={() => handleViewBooking(booking)}
+          onDelete={() => handleOpenDelete(booking)}
+        />
+      ),
+    },
+  ];
 
   return (
     <>
@@ -180,6 +180,7 @@ export default function BookingsList() {
 
       {/* Table */}
       <DataTable
+        item="Bookings"
         columns={columns}
         rows={data?.data?.booking ?? []}
         count={data?.data?.totalCount ?? 0}

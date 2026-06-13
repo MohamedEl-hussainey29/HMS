@@ -60,63 +60,63 @@ export default function UsersList() {
   };
 
   const columns: TableColumn<User>[] = [
-      {
-        id: "userName",
-        label: "Username",
-        render: (user) => user.userName,
-      },
-      {
-        id: "profileImage",
-        label: "Profile Image",
-        align: "center",
-        render: (user) =>
-          user.profileImage?.[0] ? (
-            <Box
-              component="img"
-              src={user.profileImage}
-              alt={user.userName}
-              sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
-            />
-          ) : (
-            <Box
-              component="img"
-              src={defaultAvatar}
-              alt={user.userName}
-              sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
-            />
-          ),
-      },
-      {
-        id: "email",
-        label: "Email",
-        align: "center",
-        render: (user) => user.email,
-      },
-      {
-        id: "phoneNumber",
-        label: "Phone Number",
-        align: "center",
-        render: (user) => user.phoneNumber,
-      },
-      {
-        id: "country",
-        label: "Country",
-        align: "center",
-        render: (user) => user.country,
-      },
-      {
-        id: "createdAt",
-        label: "Joining Date",
-        align: "center",
-        render: (user) => new Date(user.createdAt).toLocaleDateString(),
-      },
-      {
-        id: "options",
-        label: "",
-        align: "center",
-        render: (user) => ( <RowActions showView onView={() => handleViewUser(user)} />)
-      },
-    ];
+    {
+      id: "userName",
+      label: "Username",
+      render: (user) => user.userName,
+    },
+    {
+      id: "profileImage",
+      label: "Profile Image",
+      align: "center",
+      render: (user) =>
+        user.profileImage?.[0] ? (
+          <Box
+            component="img"
+            src={user.profileImage}
+            alt={user.userName}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
+        ) : (
+          <Box
+            component="img"
+            src={defaultAvatar}
+            alt={user.userName}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
+        ),
+    },
+    {
+      id: "email",
+      label: "Email",
+      align: "center",
+      render: (user) => user.email,
+    },
+    {
+      id: "phoneNumber",
+      label: "Phone Number",
+      align: "center",
+      render: (user) => "0" + user.phoneNumber,
+    },
+    {
+      id: "country",
+      label: "Country",
+      align: "center",
+      render: (user) => user.country,
+    },
+    {
+      id: "createdAt",
+      label: "Joining Date",
+      align: "center",
+      render: (user) => new Date(user.createdAt).toLocaleDateString(),
+    },
+    {
+      id: "options",
+      label: "",
+      align: "center",
+      render: (user) => ( <RowActions showView onView={() => handleViewUser(user)} />)
+    },
+  ];
 
   return (
     <>
@@ -144,6 +144,7 @@ export default function UsersList() {
   
         {/* Table */}
         <DataTable
+          item="Users"
           columns={columns}
           rows={data?.data?.users ?? []}
           count={data?.data?.totalCount ?? 0}
@@ -179,7 +180,7 @@ export default function UsersList() {
             {
               label: "Phone Number",
               value:
-                selectedUser?.phoneNumber
+                "0" + selectedUser?.phoneNumber
             },
             {
               label: "Country",
@@ -187,7 +188,7 @@ export default function UsersList() {
                 selectedUser?.country
             },
             {
-              label: "Created At",
+              label: "Joining At",
               value: selectedUser?.createdAt
                 ? new Date(selectedUser.createdAt).toLocaleDateString(): "",
             },
