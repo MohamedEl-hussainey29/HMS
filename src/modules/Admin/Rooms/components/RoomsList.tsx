@@ -87,83 +87,83 @@ export default function RoomsList() {
   };
 
   const handleDeleteRoom = async(id: string) => {
-      setDeleteLoading(true);
-      try {
-        await RoomsAPI.DeleteRoom(id);
-        toast.success("Room is deleted successfully");
-        refetch();
-        handleCloseDelete();
-      } catch (error) {
-          if (axios.isAxiosError(error)) {
-            toast.error(error.response?.data?.message);
-          }
-      }finally{
-        setDeleteLoading(false);
-      }
-    };
+    setDeleteLoading(true);
+    try {
+      await RoomsAPI.DeleteRoom(id);
+      toast.success("Room is deleted successfully");
+      refetch();
+      handleCloseDelete();
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data?.message);
+        }
+    }finally{
+      setDeleteLoading(false);
+    }
+  };
 
-    const columns: TableColumn<Room>[] = [
-        {
-          id: "roomNumber",
-          label: "Room Number",
-          render: (room) => room.roomNumber,
-        },
-        {
-          id: "images",
-          label: "Image",
-          align: "center",
-          render: (room) =>
-            room.images?.[0] ? (
-              <Box
-                component="img"
-                src={room.images[0]}
-                alt={room.roomNumber}
-                sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
-              />
-            ) : (
-              "N/A"
-            ),
-        },
-        {
-          id: "price",
-          label: "Price ($)",
-          align: "center",
-          render: (room) => room.price,
-        },
-        {
-          id: "discount",
-          label: "Discount (%)",
-          align: "center",
-          render: (room) => room.discount,
-        },
-        {
-          id: "facilities",
-          label: "Facilities",
-          align: "center",
-          render: (room) => room.facilities?.[0]?.name ?? "N/A"
-        },
-        {
-          id: "updatedAt",
-          label: "Modification Date",
-          align: "center",
-          render: (room) => new Date(room.updatedAt).toLocaleDateString(),
-        },
-        {
-          id: "options",
-          label: "",
-          align: "center",
-          render: (room) => (
-            <RowActions
-              showView
-              showEdit
-              showDelete
-              onView={() => handleViewRoom(room)}
-              onEdit={() => handleEditRoom(room)}
-              onDelete={() => handleOpenDelete(room)}
-            />
-          ),
-        },
-      ];
+  const columns: TableColumn<Room>[] = [
+    {
+      id: "roomNumber",
+      label: "Room Number",
+      render: (room) => room.roomNumber,
+    },
+    {
+      id: "images",
+      label: "Image",
+      align: "center",
+      render: (room) =>
+        room.images?.[0] ? (
+          <Box
+            component="img"
+            src={room.images[0]}
+            alt={room.roomNumber}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
+        ) : (
+          "N/A"
+        ),
+    },
+    {
+      id: "price",
+      label: "Price ($)",
+      align: "center",
+      render: (room) => room.price,
+    },
+    {
+      id: "discount",
+      label: "Discount (%)",
+      align: "center",
+      render: (room) => room.discount,
+    },
+    {
+      id: "facilities",
+      label: "Facilities",
+      align: "center",
+      render: (room) => room.facilities?.[0]?.name ?? "N/A"
+    },
+    {
+      id: "updatedAt",
+      label: "Modification Date",
+      align: "center",
+      render: (room) => new Date(room.updatedAt).toLocaleDateString(),
+    },
+    {
+      id: "options",
+      label: "",
+      align: "center",
+      render: (room) => (
+        <RowActions
+          showView
+          showEdit
+          showDelete
+          onView={() => handleViewRoom(room)}
+          onEdit={() => handleEditRoom(room)}
+          onDelete={() => handleOpenDelete(room)}
+        />
+      ),
+    },
+  ];
 
 
   return (
@@ -206,6 +206,7 @@ export default function RoomsList() {
 
       {/* Table */}
       <DataTable
+        item="Rooms"
         columns={columns}
         rows={data?.data?.rooms ?? []}
         count={data?.data?.totalCount ?? 0}

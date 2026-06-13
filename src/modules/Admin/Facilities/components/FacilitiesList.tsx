@@ -186,6 +186,7 @@ export default function FacilitiesList() {
 
       {/* Table */}
       <DataTable
+        item="Facilities"
         columns={columns}
         rows={data?.data?.facilities ?? []}
         count={data?.data?.totalCount ?? 0}
