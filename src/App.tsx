@@ -24,6 +24,7 @@ import RoomDetails from './modules/User/Rooms/components/RoomDetails/RoomDetails
 import FavList from './modules/User/Favourites/components/FavList';
 import PaymentLayout from './modules/Shared/Layouts/PaymentLayout/PaymentLayout';
 import PaymentForm from './modules/User/Payment/components/PaymentForm';
+import ProtectedRoutes from './modules/Shared/ProtectedRoutes/ProtectedRoutes';
 
 function App() {
   const routes = createBrowserRouter([
@@ -38,11 +39,11 @@ function App() {
         {path: 'verify-account' , element: <VerifyAccount/>},
         {path: 'forget-pass' , element: <ForgetPassword/>},
         {path: 'reset-pass' , element: <ResetPassword/>},
-        {path: 'change-pass' , element: <ChangePassword/>},
+        {path: 'change-pass' , element: <ProtectedRoutes><ChangePassword/></ProtectedRoutes>},
       ]
     },{
       path: '/dashboard',
-      element: <AdminLayout/>,
+      element: <ProtectedRoutes role='admin'><AdminLayout/></ProtectedRoutes>,
       errorElement: <NotFound/>,
       children:[
         {index: true , element: <Dashboard/>},
@@ -62,11 +63,11 @@ function App() {
         {path: 'home' , element: <Home/>},
         {path: 'explore-rooms' , element: <ExploreRooms/>},
         {path: 'room-details/:id' , element: <RoomDetails/>},
-        {path: 'favourites' , element: <FavList/>},
+        {path: 'favourites' , element: <ProtectedRoutes role='user'><FavList/></ProtectedRoutes>},
       ]
     },{
       path: '/payment',
-      element: <PaymentLayout/>,
+      element: <ProtectedRoutes role='user'><PaymentLayout/></ProtectedRoutes>,
       errorElement: <NotFound/>,
       children:[
         {index: true , element: <PaymentForm/>},
