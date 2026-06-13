@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Box, IconButton, Stack, useMediaQuery } from '@mui/material'; // استوردنا الـ Stack هنا
+import AuthContext from '../Layouts/AuthLayout/AuthLayout';
 
 // MUI Icons
 import HomeIcon from '@mui/icons-material/Home';
@@ -16,7 +17,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AuthContext } from '../../../context/AuthContext';
 export default function SideBar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,12 +46,12 @@ export default function SideBar() {
           onClick={() => setToggled(!toggled)}
           sx={{
             position: 'absolute',
-            top: 15,
-            left: 15,
+            top: 25,
+            left: 45,
             zIndex: 10,
-            backgroundColor: "rgba(26, 27, 30, 0.17)",
+            backgroundColor: sidebarColor,
             color: '#ffffff',
-            '&:hover': { backgroundColor: sidebarColor }
+            '&:hover': { backgroundColor: 'rgba(26, 27, 30, 0.17)' }
           }}
         >
           <MenuIcon />
@@ -59,7 +59,7 @@ export default function SideBar() {
       )}
       <Sidebar
         collapsed={isCollapsed}
-        toggled={toggled}
+        toggled={toggled} // بنربطه بالـ state عشان لما تبقى true يظهر
         onBackdropClick={() => setToggled(false)}
         breakPoint="md"
         backgroundColor={sidebarColor}
@@ -96,7 +96,7 @@ export default function SideBar() {
             menuItemStyles={{
               button: ({ active }) => ({
                 color: '#ffffff',
-                borderLeft: active ? '3px solid #ffffff' : '3px solid transparent',
+                borderLeft: active ? '3px solid #ffffff' : '4px solid transparent',
                 backgroundColor: active ? 'rgba(26, 27, 30, 0.17)' : 'transparent',
                 transition: 'all 0.3s ease-in-out',
 
