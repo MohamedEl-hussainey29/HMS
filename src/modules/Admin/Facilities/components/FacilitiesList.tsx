@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Filters from "../../../Shared/Filters/Filters";
 import DataTable, {type TableColumn} from "../../../Shared/DataTable/DataTable";
 import RowActions from "../../../Shared/RowActions/RowActions";
@@ -9,7 +10,9 @@ import FacilityData from "./FacilityData";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
+import { DataFilter } from "../../../../context/FiltersContext";
+import useFilters from "../../../../hooks/useFilters";
 
 export interface Facility {
   _id: string;
@@ -22,7 +25,7 @@ export interface Facility {
   updatedAt: string;
 }
 
-interface FacilitiesResponse {
+export interface FacilitiesResponse {
   data: {
     facilities: Facility[];
     totalCount: number;
@@ -37,6 +40,9 @@ export default function FacilitiesList() {
   const [openForm, setOpenForm] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
+
+  const { search } = DataFilter();
+  const ActiveFilters = !!(search);
 
 
   const handleOpenForm = () => {
@@ -62,7 +68,7 @@ export default function FacilitiesList() {
     });
   }, [page, rowsPerPage]);
 
-  const { data, isLoading, error , refetch } = useGetData<FacilitiesResponse>(
+  const { data: facilities, isLoading, error , refetch } = useGetData<FacilitiesResponse>(
     fetchFacilities,
     [page, rowsPerPage],
   );
@@ -145,6 +151,41 @@ export default function FacilitiesList() {
     },
   ];
 
+  // Full fetch (all facilities) used only when filters are active
+  const fetchAllFacilities = useCallback((): Promise<AxiosResponse<FacilitiesResponse>> => {
+    if (!ActiveFilters) {
+      return Promise.resolve({
+        data: { data: { facilities: [], totalCount: 0 } },
+      } as unknown as AxiosResponse<FacilitiesResponse>);
+    }
+    return FacilitiesAPI.getAllFacilities({
+      page: 1,
+      size: facilities?.data?.totalCount || 1000,
+    });
+  }, [ActiveFilters, facilities?.data?.totalCount]);
+
+  const { data: allData, isLoading: filterLoading } = useGetData<FacilitiesResponse>(
+    fetchAllFacilities,
+    [ActiveFilters, facilities?.data?.totalCount, search],
+  );
+
+  const filteredFacilities = useFilters(allData?.data?.facilities ?? [], {
+    searchFields: (facility) => [facility.name]
+  });
+
+  useEffect(() => {
+    setPage(0);
+  }, [search]);
+
+  const paginatedFiltered = filteredFacilities.slice(
+    page * rowsPerPage, //start
+    page * rowsPerPage + rowsPerPage, //end
+  );
+
+  const rows = ActiveFilters ? paginatedFiltered : facilities?.data?.facilities ?? [];
+  const count = ActiveFilters ? filteredFacilities.length : facilities?.data?.totalCount ?? 0;
+  const loading = ActiveFilters ? filterLoading : isLoading;
+
   return (
     <Box sx={{ width: "100%", mt: 2 }}>
       {/* Header */}
@@ -188,11 +229,11 @@ export default function FacilitiesList() {
       <DataTable
         item="Facilities"
         columns={columns}
-        rows={data?.data?.facilities ?? []}
-        count={data?.data?.totalCount ?? 0}
+        rows={rows}
+        count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        loading={isLoading}
+        loading={loading}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />

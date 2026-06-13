@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useCallback, useEffect, useState } from "react";
 import { AdminsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import type { TableColumn } from "../../../Shared/DataTable/DataTable";
@@ -8,6 +9,9 @@ import defaultAvatar from "../../../../assets/images/man-avatar-profile-picture-
 import Filters from "../../../Shared/Filters/Filters";
 import DataTable from "../../../Shared/DataTable/DataTable";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
+import { DataFilter } from "../../../../context/FiltersContext";
+import type { AxiosResponse } from "axios";
+import useFilters from "../../../../hooks/useFilters";
 
 export interface User {
   _id: string;
@@ -33,6 +37,9 @@ export default function UsersList() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [openView, setOpenView] = useState(false);
 
+  const { search } = DataFilter();
+  const ActiveFilters = !!(search);
+
   const fetchUsers = useCallback(() => {
     return AdminsAPI.getAllUsers({
       page: page + 1,
@@ -40,7 +47,7 @@ export default function UsersList() {
     });
   }, [page, rowsPerPage]);
   
-  const { data, isLoading, error } = useGetData<UsersResponse>(
+  const { data: users, isLoading, error } = useGetData<UsersResponse>(
     fetchUsers,
     [page, rowsPerPage],
   );
@@ -118,6 +125,41 @@ export default function UsersList() {
     },
   ];
 
+  // Full fetch (all users) used only when filters are active
+    const fetchAllUsers = useCallback((): Promise<AxiosResponse<UsersResponse>> => {
+      if (!ActiveFilters) {
+        return Promise.resolve({
+          data: { data: { rooms: [], totalCount: 0 } },
+        } as unknown as AxiosResponse<UsersResponse>);
+      }
+      return AdminsAPI.getAllUsers({
+        page: 1,
+        size: users?.data?.totalCount || 1000,
+      });
+    }, [ActiveFilters, users?.data?.totalCount]);
+  
+    const { data: allData, isLoading: filterLoading } = useGetData<UsersResponse>(
+      fetchAllUsers,
+      [ActiveFilters, users?.data?.totalCount, search],
+    );
+  
+    const filteredUsers = useFilters(allData?.data?.users ?? [], {
+      searchFields: (user) => [user.userName]
+    });
+  
+    useEffect(() => {
+      setPage(0);
+    }, [search]);
+  
+    const paginatedFiltered = filteredUsers.slice(
+      page * rowsPerPage, //start
+      page * rowsPerPage + rowsPerPage, //end
+    );
+  
+    const rows = ActiveFilters ? paginatedFiltered : users?.data?.users ?? [];
+    const count = ActiveFilters ? filteredUsers.length : users?.data?.totalCount ?? 0;
+    const loading = ActiveFilters ? filterLoading : isLoading;
+
   return (
     <>
       <Box sx={{ width: "100%", mt: 2 }}>
@@ -146,11 +188,11 @@ export default function UsersList() {
         <DataTable
           item="Users"
           columns={columns}
-          rows={data?.data?.users ?? []}
-          count={data?.data?.totalCount ?? 0}
+          rows={rows}
+          count={count}
           page={page}
           rowsPerPage={rowsPerPage}
-          loading={isLoading}
+          loading={loading}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

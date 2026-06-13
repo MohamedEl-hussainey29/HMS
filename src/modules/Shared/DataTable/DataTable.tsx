@@ -113,12 +113,14 @@ export default function DataTable<T>({
                 </StyledTableRow>
               ))
             ):(
-              <TableCell
-                colSpan={columns.length}
-                align="center"
-              >
-                <NoData item={item} />
-              </TableCell>
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  align="center"
+                >
+                  <NoData item={item} />
+                </TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
