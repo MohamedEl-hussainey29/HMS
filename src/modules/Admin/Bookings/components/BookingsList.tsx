@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useCallback, useEffect, useState } from "react";
 import { BookingsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import type { TableColumn } from "../../../Shared/DataTable/DataTable";
 import RowActions from "../../../Shared/RowActions/RowActions";
 import { Box, Chip, Grid, Typography } from "@mui/material";
@@ -10,6 +11,8 @@ import Filters from "../../../Shared/Filters/Filters";
 import DataTable from "../../../Shared/DataTable/DataTable";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
+import { DataFilter } from "../../../../context/FiltersContext";
+import useFilters from "../../../../hooks/useFilters";
 
 export interface Booking {
   _id: string;
@@ -45,6 +48,9 @@ export default function BookingsList() {
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
 
+  const { search, startDate, endDate } = DataFilter();
+const ActiveFilters = !!(search || startDate || endDate);
+
   const handleOpenDelete = (booking: Booking) => {
     setSelectedBooking(booking);
     setOpenDelete(true);
@@ -60,7 +66,7 @@ export default function BookingsList() {
     });
   }, [page, rowsPerPage]);
 
-  const { data, isLoading, error , refetch } = useGetData<BookingsResponse>(
+  const { data: bookings, isLoading, error , refetch } = useGetData<BookingsResponse>(
     fetchBookings,
     [page, rowsPerPage],
   );
@@ -138,6 +144,12 @@ export default function BookingsList() {
       render: (booking) => new Date(booking.endDate).toLocaleDateString(),
     },
     {
+      id: "user",
+      label: "User",
+      align: "center",
+      render: (booking) => booking.user.userName,
+    },
+    {
       id: "options",
       label: "",
       align: "center",
@@ -151,6 +163,43 @@ export default function BookingsList() {
       ),
     },
   ];
+
+  // Full fetch (all users) used only when filters are active
+      const fetchAllBookings = useCallback((): Promise<AxiosResponse<BookingsResponse>> => {
+        if (!ActiveFilters) {
+          return Promise.resolve({
+            data: { data: { booking: [], totalCount: 0 } },
+          } as unknown as AxiosResponse<BookingsResponse>);
+        }
+        return BookingsAPI.getAllBookings({
+          page: 1,
+          size: bookings?.data?.totalCount || 1000,
+        });
+      }, [ActiveFilters, bookings?.data?.totalCount]);
+    
+      const { data: allData, isLoading: filterLoading } = useGetData<BookingsResponse>(
+        fetchAllBookings,
+        [ActiveFilters, bookings?.data?.totalCount, search],
+      );
+    
+      const filteredBookings = useFilters(allData?.data?.booking ?? [], {
+        searchFields: (booking) => [booking.room?.roomNumber ?? "", booking.user?.userName ?? ""],
+        startDateField: (booking) => booking.startDate,
+        endDateField: (booking) => booking.endDate,
+      });
+    
+      useEffect(() => {
+        setPage(0);
+      }, [search]);
+    
+      const paginatedFiltered = filteredBookings.slice(
+        page * rowsPerPage, //start
+        page * rowsPerPage + rowsPerPage, //end
+      );
+    
+      const rows = ActiveFilters ? paginatedFiltered : bookings?.data?.booking ?? [];
+      const count = ActiveFilters ? filteredBookings.length : bookings?.data?.totalCount ?? 0;
+      const loading = ActiveFilters ? filterLoading : isLoading;
 
   return (
     <>
@@ -168,7 +217,7 @@ export default function BookingsList() {
 
       {/* Filters */}
       <Box sx={{ mb: 2 }}>
-        <Filters showSearch />
+        <Filters showSearch showDateRange />
       </Box>
 
       {/* Error */}
@@ -182,11 +231,11 @@ export default function BookingsList() {
       <DataTable
         item="Bookings"
         columns={columns}
-        rows={data?.data?.booking ?? []}
-        count={data?.data?.totalCount ?? 0}
+        rows={rows}
+        count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        loading={isLoading}
+        loading={loading}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
@@ -236,7 +285,12 @@ export default function BookingsList() {
             label: "End Date",
             value: selectedBooking?.endDate
               ? new Date(selectedBooking.endDate).toLocaleDateString(): "",
-          }
+          },
+          {
+            label: "User",
+            value:
+              selectedBooking?.user?.userName,
+          },
         ]}
       />
     </>

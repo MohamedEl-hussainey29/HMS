@@ -85,7 +85,7 @@ export default function RowActions({ showView = false, showEdit = false, showDel
         )}
 
         {showEdit && (
-          <MenuItem onClick={onEdit}>
+          <MenuItem onClick={onEdit} sx={{bgcolor:'#eef4ff'}}>
             <ListItemIcon>
               <EditOutlinedIcon fontSize="small" sx={{ color: "#203FC7" }} />
             </ListItemIcon>
