@@ -14,6 +14,8 @@ import axios, { type AxiosResponse } from "axios";
 import { DataFilter } from "../../../../context/FiltersContext";
 import useFilters from "../../../../hooks/useFilters";
 
+
+
 export interface Facility {
   _id: string;
   name: string;
@@ -245,6 +247,7 @@ export default function FacilitiesList() {
         onDelete={handleDeleteFacility}
         item="Facility"
         itemData={selectedFacility}
+        displayName={selectedFacility?.name}
         />
 
         <ViewDetails
