@@ -247,6 +247,7 @@ export default function FacilitiesList() {
         onDelete={handleDeleteFacility}
         item="Facility"
         itemData={selectedFacility}
+        displayName={selectedFacility?.name}
         />
 
         <ViewDetails
