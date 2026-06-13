@@ -31,17 +31,13 @@ export default function useFilters<T>(
 
       const matchesDates = (() => {
         if (!startDate && !endDate) return true;
-        
-        const matchesStartDate = startDate && startDateField
-            ? startDateField(item).split("T")[0] === startDate
-            : false;
+        if (!startDateField || !endDateField) return true;
 
-        const matchesEndDate = endDate && endDateField
-            ? endDateField(item).split("T")[0] === endDate
-            : false;
+        const itemStartDate = startDateField(item).split("T")[0];
+        const itemEndDate = endDateField(item).split("T")[0];
 
-        return matchesStartDate || matchesEndDate;
-        })();
+        return itemStartDate <= endDate && itemEndDate >= startDate;
+      })();
 
       return matchesSearch && matchesFacility && matchesDates;
     });
