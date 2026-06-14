@@ -16,6 +16,7 @@ import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
 import useFilters from "../../../../hooks/useFilters";
 import { DataFilter } from "../../../../context/FiltersContext";
 import type { FacilitiesResponse } from "../../Facilities/components/FacilitiesList";
+import noImage from "../../../../assets/images/noImage.png"
 
 export interface Room {
   _id: string;
@@ -126,7 +127,12 @@ export default function RoomsList() {
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />
         ) : (
-          "N/A"
+          <Box
+            component="img"
+            src={noImage}
+            alt={room.roomNumber}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
         ),
     },
     {
@@ -278,6 +284,7 @@ export default function RoomsList() {
         onDelete={handleDeleteRoom}
         item="Room"
         itemData={selectedRoom}
+        displayName={selectedRoom?.roomNumber}
       />
 
       <ViewDetails

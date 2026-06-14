@@ -164,9 +164,20 @@ export default function ViewDetails({open,handleClose,title,fields}: ViewDetails
                       px: 2,
                       py: 0.5,
                       borderRadius: "20px",
-                      bgcolor:
-                        field.value === "completed" ? "#E8F5E9" : "#FFF3E0",
+                      bgcolor: field.value === "completed" ? "#E8F5E9" : "#FFF3E0",
                       color: field.value === "completed" ? "#2E7D32" : "#ED6C02",
+                      fontWeight: 600,
+                    }}
+                  />
+                ) : field.label === "isActive" ? (
+                  <Chip
+                    label= {field.value}
+                    sx={{
+                      px: 2,
+                      py: 0.5,
+                      borderRadius: "20px",
+                      bgcolor: field.value === 'Active' ? "#E8F5E9" : "#FFF3E0",
+                      color: field.value === 'Active' ? "#2E7D32" : "#ed0202",
                       fontWeight: 600,
                     }}
                   />

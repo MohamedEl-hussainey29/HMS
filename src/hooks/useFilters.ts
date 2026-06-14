@@ -6,14 +6,15 @@ interface UseFilteredListOptions<T> {
   facilityField?: (item: T) => string[];
   startDateField?: (item: T) => string;
   endDateField?: (item: T) => string;
+  isActiveField?: (item: T) => boolean;
 }
 
 export default function useFilters<T>(
   items: T[],
   options: UseFilteredListOptions<T> = {}
 ) {
-  const { search, facility, startDate, endDate } = DataFilter();
-  const { searchFields, facilityField, startDateField, endDateField } = options;
+  const { search, facility, startDate, endDate, isActive } = DataFilter();
+  const { searchFields, facilityField, startDateField, endDateField, isActiveField } = options;
 
   return useMemo(() => {
     return items.filter((item) => {
@@ -27,6 +28,11 @@ export default function useFilters<T>(
       const matchesFacility =
         facility && facilityField
           ? facilityField(item).includes(facility)
+          : true;
+
+      const matchesIsActive =
+        isActive !== null && isActiveField
+          ? isActiveField(item) === isActive
           : true;
 
       const matchesDates = (() => {
@@ -44,7 +50,7 @@ export default function useFilters<T>(
         return itemStartDate <= endDate && itemEndDate >= startDate;
       })();
 
-      return matchesSearch && matchesFacility && matchesDates;
+      return matchesSearch && matchesFacility && matchesIsActive && matchesDates;
     });
-  }, [items, search, facility, startDate, endDate, searchFields, facilityField, startDateField, endDateField]);
+  }, [items, search, facility, startDate, endDate, isActive, searchFields, facilityField, startDateField, endDateField, isActiveField]);
 }

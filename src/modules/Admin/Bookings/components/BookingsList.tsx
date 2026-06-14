@@ -247,6 +247,7 @@ const ActiveFilters = !!(search || startDate || endDate);
         onDelete={handleDeleteBooking}
         item="Booking"
         itemData={selectedBooking}
+        displayName={`The Booking for Room: ${selectedBooking?.room?.roomNumber}`}
       />
 
       <ViewDetails
