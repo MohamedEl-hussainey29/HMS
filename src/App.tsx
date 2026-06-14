@@ -49,6 +49,7 @@ function App() {
         {index: true , element: <Dashboard/>},
         {path: 'rooms' , element: <RoomsList/>},
         {path: 'room-data' , element: <RoomData/>},
+        {path: 'room-data/:id' , element: <RoomData/>},
         {path: 'facilities' , element: <FacilitiesList/>},
         {path: 'ads' , element: <AdsList/>},
         {path: 'bookings' , element: <BookingsList/>},
