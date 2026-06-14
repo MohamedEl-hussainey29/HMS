@@ -1,23 +1,28 @@
-import { useCallback, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useCallback, useEffect, useState } from "react";
 import DataTable, {
   type TableColumn,
 } from "../../../Shared/DataTable/DataTable";
 import { AdsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import RowActions from "../../../Shared/RowActions/RowActions";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import Filters from "../../../Shared/Filters/Filters";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
 import AdsData from "./AdsData";
+import axios, { type AxiosResponse } from "axios";
+import noImage from "../../../../assets/images/noImage.png"
+import { DataFilter } from "../../../../context/FiltersContext";
+import useFilters from "../../../../hooks/useFilters";
 
 export interface Ad {
   _id: string;
   isActive: boolean;
   room: {
     _id: string;
-    roomNumber: number;
+    roomNumber: string;
     price: number;
     capacity: number;
     discount: number;
@@ -47,6 +52,9 @@ export default function AdsList() {
   const [openView, setOpenView] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
+  const { search , isActive } = DataFilter();
+  const ActiveFilters = !!(search || isActive !== null);
+
   const handleOpenDelete = (ad: Ad) => {
     setSelectedAd(ad);
     setOpenDelete(true);
@@ -70,7 +78,7 @@ export default function AdsList() {
     });
   }, [page, rowsPerPage]);
 
-  const { data, isLoading, error, refetch } = useGetData<AdsResponse>(
+  const { data: ads, isLoading, error, refetch } = useGetData<AdsResponse>(
     fetchAds,
     [page, rowsPerPage],
   );
@@ -104,7 +112,9 @@ export default function AdsList() {
       refetch();
       handleCloseDelete();
     } catch (error) {
-      toast.error("something went wrong");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message);
+      }
     } finally {
       setDaleteLoading(false);
     }
@@ -118,26 +128,36 @@ export default function AdsList() {
       render: (ad) => ad.room.roomNumber,
     },
     {
-      id: "roomImage",
-      label: "Room Image",
-      render: (ad) => (
-        <img
-          src={ad.room.images[0]}
-          alt="room"
-          style={{ width: "70px", height: "70px", objectFit: "cover", borderRadius: '10%' }}
-        />
-      ),
+      id: "images",
+      label: "Image",
+      align: "center",
+      render: (ad) =>
+        ad.room.images[0] ? (
+          <Box
+            component="img"
+            src={ad.room.images[0]}
+            alt={ad.room.roomNumber}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
+        ) : (
+          <Box
+            component="img"
+            src={noImage}
+            alt={ad.room.roomNumber}
+            sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
+          />
+        ),
     },
     {
       id: "price",
-      label: "Price",
+      label: "Price ($)",
       render: (ad) => ad.room.price,
     },
     {
       id: "discount",
-      label: "Discount",
+      label: "Discount (%)",
       align: "center",
-      render: (ad) => `${ad.room.discount}%`,
+      render: (ad) => ad.room.discount,
     },
     {
       id: "capacity",
@@ -149,12 +169,22 @@ export default function AdsList() {
       id: "active",
       label: "Active",
       align: "center",
-      render: (ad) => (ad.isActive ? "Active" : "InActive"),
+      render: (ad) => (
+        <Chip
+          label={ad.isActive? "Active" : "In Active"}
+          size="small"
+          sx={{
+            fontWeight: 600,
+            bgcolor: ad.isActive ? "#E8F5E9" : "#FFF3E0",
+            color: ad.isActive ? "#2E7D32" : "#ed0202",
+          }}
+        />
+      ),
     },
     {
       id: "options",
       label: "",
-      align: "right",
+      align: "center",
       render: (ad) => (
         <RowActions
           showView
@@ -167,6 +197,42 @@ export default function AdsList() {
       ),
     },
   ];
+
+  // Full fetch (all Ads) used only when filters are active
+    const fetchAllAds = useCallback((): Promise<AxiosResponse<AdsResponse>> => {
+      if (!ActiveFilters) {
+        return Promise.resolve({
+          data: { data: { ads: [], totalCount: 0 } },
+        } as unknown as AxiosResponse<AdsResponse>);
+      }
+      return AdsAPI.getAllAds({
+        page: 1,
+        size: ads?.data?.totalCount || 1000,
+      });
+    }, [ActiveFilters, ads?.data?.totalCount]);
+  
+    const { data: allData, isLoading: filterLoading } = useGetData<AdsResponse>(
+      fetchAllAds,
+      [ActiveFilters, ads?.data?.totalCount, search , isActive],
+    );
+  
+    const filteredFacilities = useFilters(allData?.data?.ads ?? [], {
+      searchFields: (ad) => [ad.room.roomNumber],
+      isActiveField: (ad) => ad.isActive
+    });
+  
+    useEffect(() => {
+      setPage(0);
+    }, [search , isActive]);
+  
+    const paginatedFiltered = filteredFacilities.slice(
+      page * rowsPerPage, //start
+      page * rowsPerPage + rowsPerPage, //end
+    );
+  
+    const rows = ActiveFilters ? paginatedFiltered : ads?.data?.ads ?? [];
+    const count = ActiveFilters ? filteredFacilities.length : ads?.data?.totalCount ?? 0;
+    const loading = ActiveFilters ? filterLoading : isLoading;
 
   return (
     <>
@@ -207,7 +273,7 @@ export default function AdsList() {
 
         {/* Filters */}
         <Box sx={{ mb: 2 }}>
-          <Filters showSearch />
+          <Filters showSearch showIsActive />
         </Box>
 
         {/* Error */}
@@ -225,7 +291,7 @@ export default function AdsList() {
           onDelete={handleDeleteAds}
           item="Ad"
           itemData={selectedAd}
-          displayName={selectedAd?.room.roomNumber.toString()}
+          displayName={`Ad for Room: ${selectedAd?.room.roomNumber}`}
         />
 
         {/* view */}
@@ -234,41 +300,24 @@ export default function AdsList() {
         handleClose={() => setOpenView(false)}
         title="Ad Details"
         fields={[
-          {
-            label: 'Room Number',
-            value:selectedAd?.room.roomNumber
-          },
-          {
-            label: 'ID',
-            value:selectedAd?._id
-          },
-           {
-            label: 'isActive',
-            value:selectedAd?.isActive ? 'Active' : 'InActive'
-          },
-          {
-            label: 'Price',
-            value:selectedAd?.room.price
-          },
-          {
-            label: 'Capacity',
-            value:selectedAd?.room.capacity
-          },
-          {
-            label: 'Discount',
-            value:`${selectedAd?.room.discount}%`
-          }
+          { label: 'ID', value:selectedAd?._id },
+          { label: 'Room Number', value:selectedAd?.room.roomNumber },
+          { label: "Images",  images: selectedAd?.room?.images ?? []  },
+          { label: 'isActive', value:selectedAd?.isActive ? 'Active' : 'InActive' },
+          { label: 'Price ($)', value:selectedAd?.room.price },
+          { label: 'Capacity', value:selectedAd?.room.capacity },
+          { label: 'Discount (%)', value: selectedAd?.room.discount }
         ]}
         />
 
         <DataTable
-          item="item"
+          item="Ads"
           columns={columns}
-          rows={data?.data?.ads ?? []}
-          count={data?.data?.totalCount ?? 0}
+          rows={rows}
+          count={count}
           page={page}
           rowsPerPage={rowsPerPage}
-          loading={isLoading}
+          loading={loading}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

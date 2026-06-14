@@ -29,17 +29,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-interface CreateAdData {
-  room: string;
-  discount: number;
-  isActive: boolean;
-}
-
-interface UpdateAdData {
-  discount: number;
-  isActive: boolean;
-}
-
 export interface AdFormValues {
   room: string;
   discount: number;
