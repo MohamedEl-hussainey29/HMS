@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Box, IconButton, Stack, useMediaQuery } from '@mui/material'; // استوردنا الـ Stack هنا
+import { Box, IconButton, Stack, useMediaQuery } from '@mui/material';
 
 // MUI Icons
 import HomeIcon from '@mui/icons-material/Home';
@@ -47,9 +47,10 @@ export default function SideBar() {
           sx={{
             position: 'absolute',
             top: 25,
-            left: 45,
+            left: 20,
             zIndex: 10,
             backgroundColor: sidebarColor,
+            borderRadius: '5px',
             color: '#ffffff',
             '&:hover': { backgroundColor: 'rgba(26, 27, 30, 0.17)' }
           }}
@@ -59,7 +60,7 @@ export default function SideBar() {
       )}
       <Sidebar
         collapsed={isCollapsed}
-        toggled={toggled} // بنربطه بالـ state عشان لما تبقى true يظهر
+        toggled={toggled}
         onBackdropClick={() => setToggled(false)}
         breakPoint="md"
         backgroundColor={sidebarColor}
@@ -102,7 +103,6 @@ export default function SideBar() {
 
                 '&:hover': {
                   backgroundColor: 'rgba(26, 27, 30, 0.17)',
-                  // borderLeft: '3px solid #ffffff',
                   color: '#ffffff',
                   transition: 'all 0.3s ease-in-out',
                 },
