@@ -12,6 +12,7 @@ import ChangePassword from './modules/Authentication/ChangePassword/ChangePasswo
 import AdminLayout from './modules/Shared/Layouts/AdminLayout/AdminLayout';
 import Dashboard from './modules/Admin/Dashboard/components/Dashboard';
 import RoomsList from './modules/Admin/Rooms/components/RoomsList';
+import RoomsList from './modules/Admin/Rooms/components/RoomsUpdate';
 import RoomData from './modules/Admin/Rooms/components/RoomData';
 import FacilitiesList from './modules/Admin/Facilities/components/FacilitiesList';
 import AdsList from './modules/Admin/Ads/components/AdsList';
@@ -48,6 +49,7 @@ function App() {
       children:[
         {index: true , element: <Dashboard/>},
         {path: 'rooms' , element: <RoomsList/>},
+        {path: 'room-update' , element: <RoomUpdate/>},
         {path: 'room-data' , element: <RoomData/>},
         {path: 'facilities' , element: <FacilitiesList/>},
         {path: 'ads' , element: <AdsList/>},
