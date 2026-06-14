@@ -47,21 +47,10 @@ interface Room {
   roomNumber: string;
 }
 
-export default function AdsData({
-  open,
-  handleClose,
-  refetchData,
-  ad,
-}: AdDataProps) {
+export default function AdsData({open,handleClose,refetchData,ad}: AdDataProps) {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<AdFormValues>();
+  const {control, register, handleSubmit, formState: { errors }, reset} = useForm<AdFormValues>();
 
   const submitAd = async (data: AdFormValues) => {
     setSubmitLoading(true);
@@ -192,7 +181,7 @@ export default function AdsData({
 
             <TextField
               type="text"
-              label="Discount"
+              placeholder="Discount"
               variant="outlined"
               fullWidth
               sx={{
