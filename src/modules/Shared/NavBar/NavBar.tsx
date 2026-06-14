@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useState, useEffect } from 'react';
 import { AppBar, Toolbar, Box, Typography, IconButton, Avatar, Menu, Divider, CircularProgress } from '@mui/material';
 import { AuthContext } from "../../../context/AuthContext";
@@ -72,7 +73,7 @@ export default function NavBar() {
       : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  const displayUserName = apiUser?.userName || userData?.userName || "Loading...";
+  const displayUserName = apiUser?.userName || userData?.userName || "...";
   const displayEmail = apiUser?.email || userData?.email || "No Email";
   const displayPhone = apiUser?.phoneNumber || (userData as any)?.phoneNumber || "No Phone";
   const displayCountry = apiUser?.country || userData?.country || "Global";
