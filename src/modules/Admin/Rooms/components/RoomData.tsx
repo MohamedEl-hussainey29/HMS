@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {
@@ -12,6 +14,7 @@ import {
   TextField,
   Typography,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import { Controller, useForm } from "react-hook-form";
@@ -35,6 +38,7 @@ interface RoomForm {
 export default function RoomFormPage() {
   const { id } = useParams();
   const isEditMode = !!id;
+  const [submitLoading , setSubmitLoading] = useState(false);
 
   const { register, handleSubmit, control, reset } = useForm<RoomForm>({
     defaultValues: {
@@ -108,6 +112,7 @@ export default function RoomFormPage() {
 
   // ---------------- SUBMIT ----------------
   async function onSubmit(data: RoomForm) {
+    setSubmitLoading(true);
     try {
       const formData = appendFormData(data);
 
@@ -130,6 +135,8 @@ export default function RoomFormPage() {
       navigate("/dashboard/rooms");
     } catch (error: any) {
       console.log(error?.response?.data);
+    }finally{
+      setSubmitLoading(false);
     }
   }
 
@@ -140,7 +147,7 @@ export default function RoomFormPage() {
   }, [id]);
 
   return (
-    <Box p={5}>
+    <Box sx={{p: 5}}>
       <Paper sx={{ maxWidth: 800, mx: "auto", p: 4, borderRadius: 3 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -207,15 +214,12 @@ export default function RoomFormPage() {
 
           {/* UPLOAD */}
           <Box
-            mt={4}
-            p={5}
-            border="2px dashed #ccc"
-            textAlign="center"
-            sx={{ cursor: "pointer" }}
+            
+            sx={{ cursor: "pointer" , mt: 4, p:5 , border: "2px dashed #ccc" , textAlign: "center" }}
             onClick={() => document.getElementById("fileInput")?.click()}
           >
             <CloudUploadOutlinedIcon sx={{ fontSize: 50, color: "#009247" }} />
-            <Typography mt={2}>
+            <Typography sx={{mt:2}}>
               Drag & Drop or Click to Upload Images
             </Typography>
 
@@ -228,8 +232,17 @@ export default function RoomFormPage() {
             />
           </Box>
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 4 }}>
-            {isEditMode ? "Update Room" : "Create Room"}
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 4 }} disabled={submitLoading}>
+            {submitLoading? 
+              (
+                <Box sx={{ display: 'flex' }}>
+                <CircularProgress aria-label="Loading…" />
+              </Box>
+              )
+            :
+            isEditMode ? "Update Room" : "Create Room"
+          }
+            
           </Button>
         </form>
       </Paper>
