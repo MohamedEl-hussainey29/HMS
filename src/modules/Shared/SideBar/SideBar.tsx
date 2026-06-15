@@ -1,28 +1,30 @@
-import { useContext, useState } from 'react';
-import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Box, IconButton, Stack, useMediaQuery } from '@mui/material';
+import { useContext, useState } from "react";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Box, IconButton, Stack, useMediaQuery } from "@mui/material";
 
 // MUI Icons
-import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ImportContactsIcon from '@mui/icons-material/ImportContacts';
-import DomainIcon from '@mui/icons-material/Domain';
-import LockResetIcon from '@mui/icons-material/LockReset';
-import LogoutIcon from '@mui/icons-material/Logout';
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ImportContactsIcon from "@mui/icons-material/ImportContacts";
+import DomainIcon from "@mui/icons-material/Domain";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import MenuIcon from '@mui/icons-material/Menu';
-import { AuthContext } from '../../../context/AuthContext';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import MenuIcon from "@mui/icons-material/Menu";
+
+import { AuthContext } from "../../../context/AuthContext";
+
 export default function SideBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const authContext = useContext(AuthContext);
 
-  const isMobileOrTablet = useMediaQuery('(max-width:900px)');
+  const isMobileOrTablet = useMediaQuery("(max-width:900px)");
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
@@ -35,147 +37,177 @@ export default function SideBar() {
 
   const sidebarColor = "rgba(32, 63, 199, 1)";
 
-  return (
-    <Box sx={{
-      display: 'flex',
-      height: '100vh'
-    }}>
+  const menuItemStyles = {
+    button: ({ active }: { active?: boolean }) => ({
+      color: "#ffffff",
+      borderLeft: active
+        ? "3px solid #ffffff"
+        : "4px solid transparent",
+      backgroundColor: active
+        ? "rgba(26, 27, 30, 0.17)"
+        : "transparent",
+      transition: "all 0.3s ease-in-out",
 
+      "&:hover": {
+        backgroundColor: "rgba(26, 27, 30, 0.17)",
+        color: "#ffffff",
+      },
+    }),
+    icon: {
+      color: "#ffffff",
+    },
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        height: "100vh",
+      }}
+    >
       {isMobileOrTablet && (
         <IconButton
           onClick={() => setToggled(!toggled)}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 25,
             left: 20,
             zIndex: 10,
             backgroundColor: sidebarColor,
-            borderRadius: '5px',
-            color: '#ffffff',
-            '&:hover': { backgroundColor: 'rgba(26, 27, 30, 0.17)' }
+            borderRadius: "5px",
+            color: "#ffffff",
+            "&:hover": {
+              backgroundColor: "rgba(26, 27, 30, 0.17)",
+            },
           }}
         >
           <MenuIcon />
         </IconButton>
       )}
+
       <Sidebar
         collapsed={isCollapsed}
         toggled={toggled}
         onBackdropClick={() => setToggled(false)}
         breakPoint="md"
         backgroundColor={sidebarColor}
-        rootStyles={{ border: 'none' }}
+        rootStyles={{
+          border: "none",
+        }}
       >
-        <Stack spacing={1} sx={{ height: '100%', py: 2 }}>
-          {!isMobileOrTablet && (
-            <Box sx={{
-              display: "flex",
-              justifyContent: isCollapsed ? 'center' : 'flex-end',
-              px: isCollapsed ? 0 : 2,
-              mb: 2
-            }}>
-              <IconButton
-                onClick={() => setIsCollapsed(!isCollapsed)}
+        <Stack
+          sx={{
+            height: "100%",
+            py: 2,
+            justifyContent: "space-between",
+          }}
+        >
+          <Box>
+            {!isMobileOrTablet && (
+              <Box
                 sx={{
-                  color: '#ffffff',
-                  backgroundColor: 'rgba(26, 27, 30, 0.17)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(26, 27, 30, 0.17)',
-                  },
-
-                  width: 35,
-                  height: 35,
+                  display: "flex",
+                  justifyContent: isCollapsed ? "center" : "flex-end",
+                  px: isCollapsed ? 0 : 2,
+                  mb: 2,
                 }}
               >
-                {isCollapsed ? <KeyboardArrowRightIcon /> : <KeyboardArrowLeftIcon />}
-              </IconButton>
+                <IconButton
+                  onClick={() => setIsCollapsed(!isCollapsed)}
+                  sx={{
+                    color: "#ffffff",
+                    backgroundColor: "rgba(26, 27, 30, 0.17)",
+                    "&:hover": {
+                      backgroundColor: "rgba(26, 27, 30, 0.17)",
+                    },
+                    width: 35,
+                    height: 35,
+                  }}
+                >
+                  {isCollapsed ? (
+                    <KeyboardArrowRightIcon />
+                  ) : (
+                    <KeyboardArrowLeftIcon />
+                  )}
+                </IconButton>
+              </Box>
+            )}
 
-            </Box>
-          )}
+            <Menu menuItemStyles={menuItemStyles}>
+              <MenuItem
+                icon={<HomeIcon />}
+                active={location.pathname === "/dashboard"}
+                component={<Link to="/dashboard" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Home
+              </MenuItem>
 
-          <Menu
-            menuItemStyles={{
-              button: ({ active }) => ({
-                color: '#ffffff',
-                borderLeft: active ? '3px solid #ffffff' : '4px solid transparent',
-                backgroundColor: active ? 'rgba(26, 27, 30, 0.17)' : 'transparent',
-                transition: 'all 0.3s ease-in-out',
+              <MenuItem
+                icon={<PeopleIcon />}
+                active={location.pathname === "/dashboard/users"}
+                component={<Link to="/dashboard/users" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Users
+              </MenuItem>
 
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 27, 30, 0.17)',
-                  color: '#ffffff',
-                  transition: 'all 0.3s ease-in-out',
-                },
-              }),
-              icon: {
-                color: '#ffffff',
-              }
-            }}
-          >
+              <MenuItem
+                icon={<DashboardIcon />}
+                active={location.pathname === "/dashboard/rooms"}
+                component={<Link to="/dashboard/rooms" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Rooms
+              </MenuItem>
+
+              <MenuItem
+                icon={<CalendarMonthIcon />}
+                active={location.pathname === "/dashboard/ads"}
+                component={<Link to="/dashboard/ads" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Ads
+              </MenuItem>
+
+              <MenuItem
+                icon={<ImportContactsIcon />}
+                active={location.pathname === "/dashboard/bookings"}
+                component={<Link to="/dashboard/bookings" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Bookings
+              </MenuItem>
+
+              <MenuItem
+                icon={<DomainIcon />}
+                active={location.pathname === "/dashboard/facilities"}
+                component={<Link to="/dashboard/facilities" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Facilities
+              </MenuItem>
+
+              <MenuItem
+                icon={<LockResetIcon />}
+                active={location.pathname === "/auth/change-pass"}
+                component={<Link to="/auth/change-pass" />}
+                onClick={() => isMobileOrTablet && setToggled(false)}
+              >
+                Change Password
+              </MenuItem>
+            </Menu>
+          </Box>
+
+          {/* Bottom Section */}
+          <Menu menuItemStyles={menuItemStyles}>
             <MenuItem
-              icon={<HomeIcon />}
-              active={location.pathname === "/dashboard"}
-              component={<Link to="/dashboard" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Home
-            </MenuItem>
-            <MenuItem
-              icon={<PeopleIcon />}
-              active={location.pathname === "/dashboard/users"}
-              component={<Link to="/dashboard/users" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Users
-            </MenuItem>
-            <MenuItem
-              icon={<DashboardIcon />}
-              active={location.pathname === "/dashboard/rooms"}
-              component={<Link to="/dashboard/rooms" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Rooms
-            </MenuItem>
-            <MenuItem
-              icon={<CalendarMonthIcon />}
-              active={location.pathname === "/dashboard/ads"}
-              component={<Link to="/dashboard/ads" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Ads
-            </MenuItem>
-            <MenuItem
-              icon={<ImportContactsIcon />}
-              active={location.pathname === "/dashboard/bookings"}
-              component={<Link to="/dashboard/bookings" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Bookings
-            </MenuItem>
-            <MenuItem
-              icon={<DomainIcon />}
-              active={location.pathname === "/dashboard/facilities"}
-              component={<Link to="/dashboard/facilities" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Facilities
-            </MenuItem>
-            <MenuItem
-              icon={<LockResetIcon />}
-              active={location.pathname === "/auth/change-pass"}
-              component={<Link to="/auth/change-pass" />}
-              onClick={() => isMobileOrTablet && setToggled(false)}
-            >
-              Change Password
-            </MenuItem>
-            <MenuItem
-              onClick={logout}
               icon={<LogoutIcon />}
+              onClick={logout}
             >
               Logout
             </MenuItem>
           </Menu>
-
         </Stack>
       </Sidebar>
     </Box>
