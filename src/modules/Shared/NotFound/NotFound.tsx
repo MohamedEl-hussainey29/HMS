@@ -92,7 +92,15 @@ export default function NotFound() {
                 variant="contained"
                 size="large"
                 startIcon={<ArrowBackIcon />}
-                onClick={() => navigate("/dashboard")}
+                onClick={() => 
+                {
+                  if(window.history.length > 1){
+                    navigate(-1);
+                  } else{
+                    navigate('/dashboard');
+                  }
+                }
+                }
                 sx={{
                   bgcolor: "#203FC7",
                   px: 5,
@@ -102,7 +110,7 @@ export default function NotFound() {
                   fontWeight: 600,
                 }}
               >
-                Back to Dashboard
+                Back
               </Button>
             </Box>
           </Stack>
