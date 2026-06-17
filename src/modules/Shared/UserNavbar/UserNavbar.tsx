@@ -20,7 +20,10 @@ export default function UserNavbar() {
                 <Box component="span" sx={{ color: "#365CF5" }}>Stay</Box>
                 <Box component="span" sx={{ color: "black" }}>cation.</Box>
             </Typography>
-            <Button variant="contained" size="large" onClick={logout}>logout</Button>
+            <Box>
+              <Button variant="contained" size="large" onClick={()=>navigate("/explore-rooms")}>Explore Rooms</Button>
+              <Button variant="contained" size="large" onClick={logout} sx={{ml: 1}}>logout</Button>
+            </Box>
         </Grid>
         <Divider/>
     </>
