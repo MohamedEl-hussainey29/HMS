@@ -15,14 +15,14 @@ export default function PopularAds() {
 
     const displayedAds = ads?.data?.ads ?? [];
     const count = displayedAds.length;
-    const isBigLayout = count === 5 || count === 3; // only these get the big first card
+    const isBigLayout = count === 5 || count === 3;
 
     const getGridConfig = () => {
         switch (count) {
             case 5:
             case 3:
             return {
-                gridTemplateColumns: { xs: "1fr", md: "0.8fr 1fr" }, // 👈 only 2 columns
+                gridTemplateColumns: { xs: "1fr", md: "0.8fr 1fr" },
                 gridTemplateRows: { md: "220px 220px" },
             };
             case 4:
@@ -50,9 +50,9 @@ export default function PopularAds() {
             if (index === 4) return { gridRow: { md: "2" }, gridColumn: { md: "3" } };
         }
         if (count === 3) {
-            if (index === 0) return { gridRow: { md: "1 / 3" }, gridColumn: { md: "1" } }; // big card spans both rows
-            if (index === 1) return { gridRow: { md: "1" }, gridColumn: { md: "2" } };      // top right
-            if (index === 2) return { gridRow: { md: "2" }, gridColumn: { md: "2" } };      // bottom right
+            if (index === 0) return { gridRow: { md: "1 / 3" }, gridColumn: { md: "1" } };
+            if (index === 1) return { gridRow: { md: "1" }, gridColumn: { md: "2" } };
+            if (index === 2) return { gridRow: { md: "2" }, gridColumn: { md: "2" } };
         }
         return {};
     };
