@@ -2,6 +2,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useNavigate } from "react-router-dom";
+import noImage from "../../../assets/images/Screenshot 2026-06-17 024622.png"
 
 export interface Room {
   _id: string;
@@ -35,7 +36,7 @@ export default function RoomCard({ room }: RoomCardProps) {
     >
       <Box
         component="img"
-        src={room.images[0]}
+        src={room.images.length != 0 ? room.images[0] : noImage}
         alt={`Room ${room.roomNumber}`}
         sx={{width: "100%", height: 220, objectFit: "cover", display: "block"}}
       />
