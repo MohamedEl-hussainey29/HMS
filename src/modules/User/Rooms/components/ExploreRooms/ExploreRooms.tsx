@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRooms } from "../../../../../context/RoomsContext";
-import { Box, CircularProgress, circularProgressClasses, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import RoomCard from "../../../../Shared/RoomCard/RoomCard";
 import BreadCrumbs from "../../../../Shared/BreadCrumbs/BreadCrumbs";
 import { useEffect } from "react";
+import Spinner from "../../../../Shared/Spinner/Spinner";
 
 export default function ExploreRooms() {
   const { rooms, isLoading ,fetchRooms } = useRooms();
@@ -44,40 +45,17 @@ export default function ExploreRooms() {
       </Box>
       <Box>
         {isLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <CircularProgress
-              variant="indeterminate"
-              disableShrink
-              enableTrackSlot
-              sx={(theme) => ({
-                color: "#1a90ff",
-                animationDuration: "550ms",
-                [`& .${circularProgressClasses.circle}`]: {
-                  strokeLinecap: "round",
-                },
-                [`& .${circularProgressClasses.track}`]: {
-                  opacity: 1,
-                  stroke: (theme.vars || theme).palette.grey[200],
-                  ...theme.applyStyles("dark", {
-                    stroke: (theme.vars || theme).palette.grey[800],
-                  }),
-                },
-                ...theme.applyStyles("dark", {
-                  color: "#308fe8",
-                }),
-              })}
-              size={40}
-              thickness={4}
-              aria-label="Loading…"
-            />
+          <Spinner/>
+        ): <Box sx={{px: 6}}>
+            <Typography sx={{color: "#152C5B", fontSize:'24px', fontWeight: 500}}>All Rooms</Typography>
+            <Grid container spacing={3} sx={{mt: 2}}>
+              {rooms.map((room) => (
+                <Grid key={room._id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                  <RoomCard room={room} />
+                </Grid>
+              ))}
+            </Grid>
           </Box>
-        ): <Grid container spacing={3}>
-            {rooms.map((room) => (
-              <Grid key={room._id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                <RoomCard room={room} />
-              </Grid>
-            ))}
-          </Grid>
         }
         
       </Box>

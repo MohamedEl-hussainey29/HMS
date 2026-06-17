@@ -10,18 +10,19 @@ export interface Room {
   price: number;
   capacity: number;
   discount: number;
-  facilities: { _id: string; name: string }[];
-  createdBy: { _id: string; userName: string };
   images: string[];
-  createdAt: string;
-  updatedAt: string;
+  facilities?: { _id: string; name: string }[];
+  createdBy?: { _id: string; userName: string };
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface RoomCardProps {
   room: Room;
+  height?: number | string;
 }
 
-export default function RoomCard({ room }: RoomCardProps) {
+export default function RoomCard({ room , height = 220 }: RoomCardProps) {
   const navigate = useNavigate();
   return (
     <Box
@@ -31,6 +32,7 @@ export default function RoomCard({ room }: RoomCardProps) {
         border: "0",
         position: "relative",
         cursor: "pointer",
+        height: "100%",
         "&:hover .hover-overlay": { opacity: 1 },
       }}
     >
@@ -38,7 +40,7 @@ export default function RoomCard({ room }: RoomCardProps) {
         component="img"
         src={room.images.length != 0 ? room.images[0] : noImage}
         alt={`Room ${room.roomNumber}`}
-        sx={{width: "100%", height: 220, objectFit: "cover", display: "block"}}
+        sx={{width: "100%", height: height, objectFit: "cover", display: "block"}}
       />
 
       {/* Hover overlay */}

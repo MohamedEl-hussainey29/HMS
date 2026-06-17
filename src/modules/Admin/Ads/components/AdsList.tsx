@@ -36,7 +36,7 @@ export interface Ad {
   updatedAt: string;
 }
 
-interface AdsResponse {
+export interface AdsResponse {
   data: {
     ads: Ad[];
     totalCount: number;

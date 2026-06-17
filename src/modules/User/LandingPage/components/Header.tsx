@@ -55,7 +55,7 @@ export default function Header() {
   };
 
   return (
-    <Box sx={{ px: { xs: 3, md: 8 }, py: { xs: 5, md: 8 }, overflow: "hidden" }}>
+    <Box sx={{mb: 5}}>
       <Grid
         container
         sx={{
