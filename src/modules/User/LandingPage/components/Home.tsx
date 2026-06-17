@@ -1,5 +1,6 @@
 import { Grid} from "@mui/material";
 import Header from "./Header";
+import PopularAds from "./PopularAds";
 // import roomImage from "../../../../assets/images/old-money-style-bedroom@2x.jpg"
 
 export interface Room {
@@ -70,8 +71,9 @@ export default function Home() {
 // ];
   return (
     <>
-      <Grid>
+      <Grid sx={{ px: { xs: 3, md: 8 }, py: { xs: 5, md: 8 }, overflow: "hidden" }}>
         <Header/>
+        <PopularAds/>
       </Grid>
     </>
   )

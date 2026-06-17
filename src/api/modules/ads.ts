@@ -38,3 +38,12 @@ export const createAd = (data: CreateAdData) => {
 export const UpdateAd = (id: string, data: UpdateAdData) => {
   return axiosClient.put(`/admin/ads/${id}`, data);
 };
+
+export const getAllAdsByUser = (params?: PaginationParams) => {
+    return axiosClient.get('/portal/ads', 
+        {params: {
+           page : params?.page,
+           size : params?.size
+        }}
+    );
+} 
