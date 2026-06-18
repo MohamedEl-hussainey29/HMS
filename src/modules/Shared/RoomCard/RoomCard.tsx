@@ -95,7 +95,7 @@ export default function RoomCard({ room , height = 220 , showDiscount = false}: 
         }}
       >
         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-          {showDiscount ? `${room.discount}% Off` : `${room.price} per night`}
+          {showDiscount ? `${room.discount}% Off` : `$${room.price} per night`}
         </Typography>
       </Box>
 
