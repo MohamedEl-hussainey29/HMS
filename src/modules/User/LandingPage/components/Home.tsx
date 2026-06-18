@@ -2,6 +2,7 @@ import { Grid} from "@mui/material";
 import Header from "./Header";
 import PopularAds from "./PopularAds";
 import StaticSection from "./StaticSection";
+import AdsSlider from "./AdsSlider";
 // import roomImage from "../../../../assets/images/old-money-style-bedroom@2x.jpg"
 
 export interface Room {
@@ -26,6 +27,7 @@ export default function Home() {
         <Header/>
         <PopularAds/>
         <StaticSection/>
+        <AdsSlider/>
       </Grid>
     </>
   )

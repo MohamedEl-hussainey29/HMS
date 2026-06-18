@@ -20,14 +20,16 @@ export interface Room {
 interface RoomCardProps {
   room: Room;
   height?: number | string;
+  showPrice?: boolean;
+  showDiscount?: boolean;
 }
 
-export default function RoomCard({ room , height = 220 }: RoomCardProps) {
+export default function RoomCard({ room , height = 220 , showDiscount = false}: RoomCardProps) {
   const navigate = useNavigate();
   return (
     <Box
       sx={{
-        borderRadius: 2,
+        borderRadius: 4,
         overflow: "hidden",
         border: "0",
         position: "relative",
@@ -85,13 +87,15 @@ export default function RoomCard({ room , height = 220 }: RoomCardProps) {
           right: 0,
           bgcolor: "#FF498B",
           color: "#fff",
-          px: 3,
+          width: "50%",
+          display:'flex',
+          justifyContent: 'center',
           py: 1.5,
           borderBottomLeftRadius: "15px",
         }}
       >
         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-          ${room.price} per night
+          {showDiscount ? `${room.discount}% Off` : `${room.price} per night`}
         </Typography>
       </Box>
 
