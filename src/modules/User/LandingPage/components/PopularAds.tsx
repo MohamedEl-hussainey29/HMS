@@ -20,6 +20,10 @@ export default function PopularAds() {
     const getGridConfig = () => {
         switch (count) {
             case 5:
+            return {
+                gridTemplateColumns: { xs: "1fr", md: "0.8fr 1fr 1fr" },
+                gridTemplateRows: { md: "220px 220px" },
+            };
             case 3:
             return {
                 gridTemplateColumns: { xs: "1fr", md: "0.8fr 1fr" },
