@@ -58,7 +58,7 @@ const hotels = [
 export default function StaticSection() {
   return (
     <>
-        <Box sx={{mt: 5}}>
+        <Box sx={{mt: 12}}>
             <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", color: "#152C5B", mb: 2 }}>
                 Houses with beauty backyard
             </Typography>
@@ -66,7 +66,7 @@ export default function StaticSection() {
         <Box>
             <Grid container spacing={3} sx={{mt: 2}}>
               {houses.map((house,index) => (
-                <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
                   <StaticRoomCard house={house} />
                 </Grid>
               ))}
@@ -80,7 +80,7 @@ export default function StaticSection() {
         <Box>
             <Grid container spacing={3} sx={{mt: 2}}>
               {hotels.map((hotel,index) => (
-                <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
                   <StaticRoomCard house={hotel} />
                 </Grid>
               ))}

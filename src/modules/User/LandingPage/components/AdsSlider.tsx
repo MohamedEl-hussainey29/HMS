@@ -1,39 +1,49 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Grid, Typography } from "@mui/material";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from "swiper/modules";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { AdsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
 import RoomCard from "../../../Shared/RoomCard/RoomCard";
 import Spinner from "../../../Shared/Spinner/Spinner";
+import { AuthContext } from "../../../../context/AuthContext";
 
 export default function AdsSlider() {
 
+    const {userData}: any = useContext(AuthContext)
+        
     const fetchAds = useCallback(() => {
-        return AdsAPI.getAllAdsByUser({page: 1, size: 10});
-      }, []);
-    
-    const { data: ads, isLoading } = useGetData<AdsResponse>( fetchAds, []);
+        return AdsAPI.getAllAdsByUser({ page: 1, size: 5 });
+    }, []);
+
+    const { data: ads, isLoading } = useGetData<AdsResponse>(
+        fetchAds,
+        [userData],
+        !!userData
+    );
 
     const slides = ads?.data?.ads ?? [];
 
   return (
     <>
-        <Box sx={{mt: 5}}>
-            <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", color: "#152C5B", mb: 2 }}>
-                Ads
-            </Typography>
-        </Box>
-        {isLoading?
-            <Spinner/>
-            : (
+        {userData && (
+            <>
+                <Box sx={{ mt: 5 }}>
+                    <Typography sx={{fontWeight: 700,fontSize: "1.2rem",color: "#152C5B",mb: 2}}>
+                        Ads
+                    </Typography>
+                </Box>
+
+                {isLoading ? (<Spinner />) 
+                : (
                 <Box
                     sx={{
-                        "& .swiper": {pb: 6},
-                        "& .swiper-pagination": {bottom: "0px !important"}
+                    "& .swiper": { pb: 6 },
+                    "& .swiper-pagination": {bottom: "0px !important"}
                     }}
                 >
                     <Swiper
@@ -59,8 +69,9 @@ export default function AdsSlider() {
                         </Grid>
                     </Swiper>
                 </Box>
-            )
-        }
+                )}
+            </>
+            )}
         
     </>
   )

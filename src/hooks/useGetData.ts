@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -7,18 +7,19 @@ import type { AxiosResponse } from "axios";
 
 export default function useGetData<T>(
   apiFunction: () => Promise<AxiosResponse<T>>,
-  dependencies: any[] = []
+  dependencies?: any[],
+  enabled = true
 ) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const getData = async () => {
+  const getData = async (isEnabled?: boolean) => {
+    if (!isEnabled) return;
     setIsLoading(true);
     try {
       const response = await apiFunction();
-      setData(response.data); 
-      
+      setData(response.data);
       setError("");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -32,13 +33,8 @@ export default function useGetData<T>(
   };
 
   useEffect(() => {
-    getData();
-  }, dependencies);
+    getData(enabled);
+  }, [enabled, ...(dependencies ?? [])]);
 
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: getData,
-  };
+  return { data, isLoading, error, refetch: () => getData(true) };
 }

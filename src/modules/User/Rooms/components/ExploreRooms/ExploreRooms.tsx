@@ -7,14 +7,14 @@ import { useEffect } from "react";
 import Spinner from "../../../../Shared/Spinner/Spinner";
 
 export default function ExploreRooms() {
-  const { rooms, isLoading ,fetchRooms } = useRooms();
+  const { rooms, totalCount, isLoading ,fetchRooms } = useRooms();
 
   useEffect(() => {
     sessionStorage.setItem("onExploreRooms", "true");
 
     const savedFilters = sessionStorage.getItem("roomFilters");
     if (!savedFilters) {
-      fetchRooms();
+      fetchRooms({size: totalCount , page: 1});
     }
 
     return () => {
@@ -47,7 +47,7 @@ export default function ExploreRooms() {
         {isLoading ? (
           <Spinner/>
         ): <Box sx={{px: 6}}>
-            <Typography sx={{color: "#152C5B", fontSize:'24px', fontWeight: 500}}>All Rooms</Typography>
+            <Typography sx={{color: "#152C5B", fontSize:'24px', fontWeight: 500}}>All Rooms ({totalCount})</Typography>
             <Grid container spacing={3} sx={{mt: 2}}>
               {rooms.map((room) => (
                 <Grid key={room._id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
