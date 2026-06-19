@@ -1,19 +1,22 @@
-import Button from "@mui/material/Button";
-import { useContext } from "react";
-import { AuthContext } from "../../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Footer from "../../Footer/Footer";
+import UserNavbar from "../../UserNavbar/UserNavbar";
+import { Box, Grid } from "@mui/material";
 
-export default function MainLayout() {
-  const navigate = useNavigate();
-    const authContext = useContext(AuthContext);
-    const logout = () => {
-      localStorage.removeItem("token");
-      authContext?.setUserData(null);
-      navigate("/auth");
-  };
+
+export default function AdminLayout() {
+    
   return (
-    <div>
-      <Button variant="contained" size="large" onClick={logout}>logout</Button>
-    </div>
+    <>
+        <Grid>
+          <Box sx={{flex: 1, minWidth: 0, overflow:'auto'}} >
+            <UserNavbar/>
+            <Box sx={{px: 2 , mt: 2}}>
+              <Outlet/>
+              <Footer/>
+            </Box>
+          </Box>
+        </Grid>
+    </>
   )
 }

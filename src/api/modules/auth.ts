@@ -25,3 +25,7 @@ export const ForgetPassword = (data: ForgetPasswordFormData) => {
 export const ResetPassword = (data: ResetPasswordFormData) => {
     return axiosClient.post("/portal/users/reset-password", data);
 }
+
+export const getProfile = (id: string) => {
+    return axiosClient.get(`/admin/users/${id}`);
+}
