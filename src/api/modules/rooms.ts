@@ -1,3 +1,4 @@
+import type { CreateCommentRequest, CreateReviewRequest} from "../../modules/User/Rooms/components/RoomDetails/Types/types";
 import axiosClient from "../axiosClient";
 
 
@@ -35,3 +36,24 @@ export const getAllRoomsByUser = (params?: GetRoomsParams) => {
     }
   });
 };
+
+// user
+export interface RoomDetailsParams{
+    startDate: string,
+    endDate: string
+}
+
+export const getRoomDetails = (id: string, params:RoomDetailsParams) => {
+       return axiosClient.get(`/portal/rooms/${id}`, {params})
+}
+
+// user => review
+export const createReview = (data: CreateReviewRequest) => {
+       return axiosClient.post(`/portal/room-reviews`, data);
+}
+
+// user => comment
+export const createComment = (data: CreateCommentRequest) => {
+       return axiosClient.post(`/portal/room-comments`, data);
+}
+
