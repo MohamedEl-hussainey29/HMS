@@ -4,6 +4,7 @@ import PopularAds from "./PopularAds";
 import StaticSection from "./StaticSection";
 import AdsSlider from "./AdsSlider";
 import ReviewsSlider from "./ReviewsSlider";
+import { useEffect } from "react";
 
 export interface Room {
   _id: string;
@@ -21,6 +22,9 @@ export interface Room {
 
 
 export default function Home() {
+  useEffect(() => {
+    sessionStorage.removeItem("roomFilters");
+  }, []);
   return (
     <>
       <Grid sx={{ px: { xs: 3, md: 8 }, py: { xs: 5, md: 8 }, overflow: "hidden" }}>
