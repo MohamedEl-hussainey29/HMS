@@ -2,13 +2,11 @@ import { Box, Button, Typography } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import type { BookingCardProps } from "../Types/types";
 import { useMemo } from "react";
+import { useBooking } from "../../../../../../context/BookingContext";
 
-export default function BookingCard({
-  price,
-  discount,
-  startDate,
-  endDate,
-}: BookingCardProps) {
+export default function BookingCard({ price, discount }: BookingCardProps) {
+  const { startDate, endDate } = useBooking();
+
   const { nights, discountedPrice, totalPrice } = useMemo(() => {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -31,18 +29,20 @@ export default function BookingCard({
     };
   }, [startDate, endDate, price, discount]);
 
-  const formatedStartDate = new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short'
-  }).format(new Date(startDate)) 
+  const formatedStartDate = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+  }).format(new Date(startDate));
 
-  const formatedEndDate = new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short'
-  }).format(new Date(endDate))
-  
-const formattedPrice = new Intl.NumberFormat("en-US").format(price);
-const formattedDiscountedPrice = new Intl.NumberFormat("en-US").format(discountedPrice);
+  const formatedEndDate = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+  }).format(new Date(endDate));
+
+  const formattedPrice = new Intl.NumberFormat("en-US").format(price);
+  const formattedDiscountedPrice = new Intl.NumberFormat("en-US").format(
+    discountedPrice,
+  );
 
   return (
     <>
@@ -160,7 +160,7 @@ const formattedDiscountedPrice = new Intl.NumberFormat("en-US").format(discounte
                 textTransform: "none",
               }}
             >
-              Continue Book
+              Proceed to Payment
             </Button>
           </Box>
         </Box>

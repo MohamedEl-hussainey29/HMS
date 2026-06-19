@@ -11,7 +11,7 @@ interface ReviewsProps {
 }
 
 export default function Reviews({ roomId }: ReviewsProps) {
-  const { register, handleSubmit, control } = useForm<ReviewFormData>({
+  const { register, handleSubmit, control, reset } = useForm<ReviewFormData>({
     defaultValues: {
       rating: 2,
       review: "",
@@ -27,6 +27,10 @@ export default function Reviews({ roomId }: ReviewsProps) {
         roomId: roomId!,
       });
       toast.success(response.data.message);
+      reset({
+      rating: 2,
+      review: "",
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message);

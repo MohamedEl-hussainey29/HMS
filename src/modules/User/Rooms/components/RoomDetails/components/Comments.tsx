@@ -11,14 +11,15 @@ interface commentsProps {
 
 export default function Comments({roomId}: commentsProps) {
 
-  const {register, handleSubmit} = useForm<CommentsFormData>();
+  const {register, handleSubmit, reset} = useForm<CommentsFormData>();
 
   const onSubmit = async (data: CommentsFormData) => {
     
      try {
       const response = await RoomsAPI.createComment({...data, roomId: roomId!});
       toast.success(response.data.message)
-      
+      reset();
+
      } catch (error) {
       if(error instanceof AxiosError){
         toast.error(error.response?.data.message);
