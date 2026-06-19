@@ -15,27 +15,21 @@ import Divider from "@mui/material/Divider";
 export default function RoomDetails() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
 
   const fetchRoomDetails = useCallback(async () => {
-    if (!id || !startDate || !endDate) {
+    if (!id) {
       throw new Error("Missing parameters");
     }
 
-    const response = await RoomsAPI.getRoomDetails(id, {
-      startDate,
-      endDate,
-    });
+    const response = await RoomsAPI.getRoomDetails(id);
 
     return response;
-  }, [id, startDate, endDate]);
+  }, [id]);
 
-  const { data } = useGetData<RoomDetailsResponse>(fetchRoomDetails, [
-    id,
-    startDate,
-    endDate,
-  ]);
+  const { data } = useGetData<RoomDetailsResponse>(fetchRoomDetails, [id]);
   const room = data?.data.room;
 
   return (

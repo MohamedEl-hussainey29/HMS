@@ -38,13 +38,9 @@ export const getAllRoomsByUser = (params?: GetRoomsParams) => {
 };
 
 // user
-export interface RoomDetailsParams{
-    startDate: string,
-    endDate: string
-}
 
-export const getRoomDetails = (id: string, params:RoomDetailsParams) => {
-       return axiosClient.get(`/portal/rooms/${id}`, {params})
+export const getRoomDetails = (id: string) => {
+       return axiosClient.get(`/portal/rooms/${id}`)
 }
 
 // user => review
