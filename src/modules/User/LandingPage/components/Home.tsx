@@ -3,6 +3,7 @@ import Header from "./Header";
 import PopularAds from "./PopularAds";
 import StaticSection from "./StaticSection";
 import AdsSlider from "./AdsSlider";
+import ReviewsSlider from "./ReviewsSlider";
 
 export interface Room {
   _id: string;
@@ -27,6 +28,7 @@ export default function Home() {
         <PopularAds/>
         <StaticSection/>
         <AdsSlider/>
+        <ReviewsSlider/>
       </Grid>
     </>
   )
