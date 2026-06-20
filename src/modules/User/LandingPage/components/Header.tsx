@@ -1,5 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Grid, IconButton, InputLabel, TextField, Typography, Divider, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputLabel,
+  TextField,
+  Typography,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -8,6 +18,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRooms } from "../../../../context/RoomsContext";
+import { useBooking } from "../../../../context/BookingContext";
 
 export interface HeaderForm {
   startDate: string;
@@ -17,23 +28,29 @@ export interface HeaderForm {
 
 export default function Header() {
   const navigate = useNavigate();
-  const { fetchRooms } = useRooms()
+  const { fetchRooms } = useRooms();
 
   const [capacity, setCapacity] = useState(2);
-  const [startDate, setStartDate] = useState(() => new Date().toISOString().split("T")[0]);
-  const [endDate, setEndDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 2);
-    return d.toISOString().split("T")[0];
-  });
-  const [submitLoading , setSubmitLoading] = useState(false);
+  const { startDate, endDate, setStartDate, setEndDate } = useBooking();
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<HeaderForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<HeaderForm>();
 
   // Extract onChange from each register call to merge manually
-  const { onChange: onStartDateChange, ...startDateRest } = register("startDate", { required: "Start Date is required!" });
-  const { onChange: onEndDateChange, ...endDateRest } = register("endDate", { required: "End Date is required!" });
-  const { onChange: onCapacityChange, ...capacityRest } = register("capacity", { required: "Capacity is required!" });
+  const { onChange: onStartDateChange, ...startDateRest } = register(
+    "startDate",
+    { required: "Start Date is required!" },
+  );
+  const { onChange: onEndDateChange, ...endDateRest } = register("endDate", {
+    required: "End Date is required!",
+  });
+  const { onChange: onCapacityChange, ...capacityRest } = register("capacity", {
+    required: "Capacity is required!",
+  });
 
   const updateCapacity = (newValue: number) => {
     const clamped = Math.max(1, newValue);
@@ -42,20 +59,24 @@ export default function Header() {
     onCapacityChange({ target: { name: "capacity", value: clamped } } as any);
   };
 
-  const onSubmit = async(data: HeaderForm) => {
-    setSubmitLoading(true)
+  const onSubmit = async (data: HeaderForm) => {
+    setSubmitLoading(true);
     try {
-      await fetchRooms({startDate: data.startDate,endDate: data.endDate,capacity: data.capacity});
+      await fetchRooms({
+        startDate: data.startDate,
+        endDate: data.endDate,
+        capacity: data.capacity,
+      });
       navigate("/explore-rooms");
     } catch (error) {
-      console.log(error)
-    }finally{
-      setSubmitLoading(false)
+      console.log(error);
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
   return (
-    <Box sx={{mb: 5}}>
+    <Box sx={{ mb: 5 }}>
       <Grid
         container
         sx={{
@@ -78,7 +99,9 @@ export default function Header() {
               mb: 1.5,
             }}
           >
-            Forget Busy Work,<br />Start Next Vacation
+            Forget Busy Work,
+            <br />
+            Start Next Vacation
           </Typography>
 
           <Typography
@@ -95,12 +118,26 @@ export default function Header() {
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Typography sx={{ fontWeight: 700, fontSize: "1rem", color: "#14183E", mb: 1.5 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                fontSize: "1rem",
+                color: "#14183E",
+                mb: 1.5,
+              }}
+            >
               Start Booking
             </Typography>
 
             {/* Pick a Date */}
-            <InputLabel sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#14183E", mb: 0.75 }}>
+            <InputLabel
+              sx={{
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                color: "#14183E",
+                mb: 0.75,
+              }}
+            >
               Pick a Date
             </InputLabel>
             <Box
@@ -182,7 +219,12 @@ export default function Header() {
             {/* Capacity */}
             <InputLabel
               htmlFor="capacity"
-              sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#14183E", mb: 0.75 }}
+              sx={{
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                color: "#14183E",
+                mb: 0.75,
+              }}
             >
               Capacity
             </InputLabel>
@@ -227,8 +269,12 @@ export default function Header() {
                     color: "#14183E",
                     textAlign: "center",
                   },
-                  "& input[type=number]::-webkit-outer-spin-button": { display: "none" },
-                  "& input[type=number]::-webkit-inner-spin-button": { display: "none" },
+                  "& input[type=number]::-webkit-outer-spin-button": {
+                    display: "none",
+                  },
+                  "& input[type=number]::-webkit-inner-spin-button": {
+                    display: "none",
+                  },
                   "& input[type=number]": { MozAppearance: "textfield" },
                 }}
                 error={!!errors?.capacity}
@@ -275,23 +321,38 @@ export default function Header() {
                 },
               }}
             >
-              {submitLoading ? 
-                <Box sx={{ display: 'flex' }}>
-                  <CircularProgress aria-label="Loading…" size="30px" sx={{color:'#FFF', mr: 1}}/> exploring...
+              {submitLoading ? (
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress
+                    aria-label="Loading…"
+                    size="30px"
+                    sx={{ color: "#FFF", mr: 1 }}
+                  />{" "}
+                  exploring...
                 </Box>
-                : "explore"
-              }
+              ) : (
+                "explore"
+              )}
             </Button>
           </Box>
         </Grid>
 
         {/* Right Side – Image */}
-        <Grid size={{ xs: 12, md: 4 }} sx={{ display: { xs: "flex", md: "block" }, justifyContent: "center" }}>
+        <Grid
+          size={{ xs: 12, md: 4 }}
+          sx={{
+            display: { xs: "flex", md: "block" },
+            justifyContent: "center",
+          }}
+        >
           <Box
             component="img"
             src={headerImg}
             alt="header image"
-            sx={{height: { xs: "260px", sm: "340px", md: "460px" },objectFit: "cover"}}
+            sx={{
+              height: { xs: "260px", sm: "340px", md: "460px" },
+              objectFit: "cover",
+            }}
           />
         </Grid>
       </Grid>

@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import BreadCrumbs from "../../../../Shared/BreadCrumbs/BreadCrumbs";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useCallback } from "react";
+import { useParams } from "react-router-dom";
+import { useCallback, useContext } from "react";
 import { RoomsAPI } from "../../../../../api";
 import useGetData from "../../../../../hooks/useGetData";
 import type { RoomDetailsResponse } from "./Types/types";
@@ -11,31 +11,28 @@ import BookingCard from "./components/BookingCard";
 import Reviews from "./components/Reviews";
 import Comments from "./components/Comments";
 import Divider from "@mui/material/Divider";
+import { AuthContext } from "../../../../../context/AuthContext";
 
 export default function RoomDetails() {
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get("startDate");
-  const endDate = searchParams.get("endDate");
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within AuthContextProvider");
+  }
+  const { userData } = authContext;
 
   const fetchRoomDetails = useCallback(async () => {
-    if (!id || !startDate || !endDate) {
+    if (!id) {
       throw new Error("Missing parameters");
     }
 
-    const response = await RoomsAPI.getRoomDetails(id, {
-      startDate,
-      endDate,
-    });
+    const response = await RoomsAPI.getRoomDetails(id);
 
     return response;
-  }, [id, startDate, endDate]);
+  }, [id]);
 
-  const { data } = useGetData<RoomDetailsResponse>(fetchRoomDetails, [
-    id,
-    startDate,
-    endDate,
-  ]);
+  const { data } = useGetData<RoomDetailsResponse>(fetchRoomDetails, [id]);
   const room = data?.data.room;
 
   return (
@@ -76,31 +73,31 @@ export default function RoomDetails() {
               <BookingCard
                 price={room.price}
                 discount={room.discount}
-                startDate={startDate!}
-                endDate={endDate!}
               />
             )}
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: 5 }}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Reviews roomId={id} />
-            </Grid>
+        {userData && (
+          <Box sx={{ mt: 5 }}>
+            <Grid container spacing={1}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Reviews roomId={id} />
+              </Grid>
 
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              flexItem
-              sx={{ bgcolor: "#3252DF" }}
-            />
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+                sx={{ bgcolor: "#3252DF" }}
+              />
 
-            <Grid sx={{ mt: { md: 4 } }} size={{ xs: 12, md: 5 }}>
-              <Comments roomId={id} />
+              <Grid sx={{ mt: { md: 4 } }} size={{ xs: 12, md: 5 }}>
+                <Comments roomId={id} />
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        )}
       </Container>
     </>
   );

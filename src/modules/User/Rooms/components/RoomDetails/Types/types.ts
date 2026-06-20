@@ -44,9 +44,6 @@ export interface CreateCommentRequest {
 export interface BookingCardProps{
     price: number;
     discount: number;
-    startDate: string;
-    endDate: string;
-    
 }
 
 // room info
