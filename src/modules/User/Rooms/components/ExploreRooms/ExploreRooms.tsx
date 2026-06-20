@@ -6,6 +6,7 @@ import RoomCard from "../../../../Shared/RoomCard/RoomCard";
 import BreadCrumbs from "../../../../Shared/BreadCrumbs/BreadCrumbs";
 import Spinner from "../../../../Shared/Spinner/Spinner";
 import Pagination from "../../../../Shared/Pagination/Pagination";
+import NoData from "../../../../Shared/NoData/NoData";
 
 const ROOMS_PER_PAGE = 12;
 
@@ -46,24 +47,32 @@ export default function ExploreRooms() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: 4,
-          py: 2,
-          mb: 5,
-        }}
-      >
-        <BreadCrumbs />
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: 700, color: "#152C5B", textAlign: "center", flex: 1 }}
-        >
-          Explore All Rooms
-        </Typography>
-      </Box>
+       <Box sx={{ py: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: {
+                xs: "center",
+                md: "flex-start",
+              },
+              mb: { xs: 2, md: 0 },
+            }}
+          >
+            <BreadCrumbs />
+          </Box>
+          <Typography
+            variant="h4"
+            sx={{
+              textAlign: "center",
+              fontWeight: 700,
+              color: "#152C5B",
+              fontSize: { xs: "1.5rem", md: "2rem" },
+            }}
+          >
+            Explore All Rooms
+          </Typography>
+        </Box>
       <Box>
         {isLoading ? (
           <Spinner />
@@ -72,20 +81,27 @@ export default function ExploreRooms() {
             <Typography sx={{ color: "#152C5B", fontSize: "24px", fontWeight: 500 }}>
               All Rooms ({totalCount})
             </Typography>
-            <Grid container spacing={3} sx={{ mt: 2 }}>
-              {rooms.map((room) => (
-                <Grid key={room._id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <RoomCard room={room} />
+            {rooms.length > 0 ?(
+              <>
+                <Grid container spacing={3} sx={{ mt: 2 }}>
+                  {rooms.map((room) => (
+                    <Grid key={room._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                      <RoomCard room={room} />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-
-            <Pagination
-              totalItems={totalCount}
-              itemsPerPage={ROOMS_PER_PAGE}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
+                <Pagination
+                  totalItems={totalCount}
+                  itemsPerPage={ROOMS_PER_PAGE}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            )
+            : (
+              <NoData item="Available Rooms"/>
+            )
+          }
           </Box>
         )}
       </Box>

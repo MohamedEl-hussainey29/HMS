@@ -45,29 +45,32 @@ export default function RoomDetails() {
 
   return (
     <Container>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: 4,
-          py: 2,
-        }}
-      >
-        <BreadCrumbs />
-
-        <Typography
-          variant="h4"
+      <Box sx={{ py: 2 }}>
+        <Box
           sx={{
-            fontWeight: 700,
-            color: "#152C5B",
-            textAlign: "center",
-            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: {
+              xs: "center",
+              md: "flex-start",
+            },
+            mb: { xs: 2, md: 0 },
           }}
         >
-          Room - {room?.roomNumber}
-        </Typography>
-      </Box>
+          <BreadCrumbs />
+        </Box>
+      <Typography
+        variant="h4"
+        sx={{
+          textAlign: "center",
+          fontWeight: 700,
+          color: "#152C5B",
+          fontSize: { xs: "1.5rem", md: "2rem" },
+        }}
+      >
+        Room - {room?.roomNumber}
+      </Typography>
+    </Box>
 
       {isLoading ? (
         <Spinner />
@@ -83,6 +86,7 @@ export default function RoomDetails() {
             <Grid size={{ xs: 12, md: 6 }}>
               {room && (
                 <BookingCard
+                  roomId={room._id}
                   price={room.price}
                   discount={room.discount}
                 />
