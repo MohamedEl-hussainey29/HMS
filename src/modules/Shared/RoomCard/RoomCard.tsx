@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, IconButton, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useNavigate } from "react-router-dom";
-import noImage from "../../../assets/images/Screenshot 2026-06-17 024622.png"
+import noImage from "../../../assets/images/Screenshot 2026-06-17 024622.png";
+import { toast } from "react-toastify";
+import { favsAPI } from "../../../api";
+import { useState, useEffect } from "react";
 
 export interface Room {
   _id: string;
@@ -22,10 +26,57 @@ interface RoomCardProps {
   height?: number | string;
   showPrice?: boolean;
   showDiscount?: boolean;
+  isFavorite?: boolean;
+  onToggleSuccess?: (roomId: string, nextState: boolean) => void; // دالة اختيارية لإبلاغ الأب بالتحديث
 }
 
-export default function RoomCard({ room , height = 220 , showDiscount = false}: RoomCardProps) {
+export default function RoomCard({
+  room,
+  height = 220,
+  showDiscount = false,
+  isFavorite = false,
+  onToggleSuccess,
+}: RoomCardProps) {
   const navigate = useNavigate();
+  
+  // 🟢 حالة محلية للقلب عشان يقلب أوتوماتيك بدون انتظار السيرفر
+  const [localIsFav, setLocalIsFav] = useState(isFavorite);
+
+  // عشان لو الـ Props اللي جاية من الأب اتحدثت، الكارت يلقط التحديث
+  useEffect(() => {
+    setLocalIsFav(isFavorite);
+  }, [isFavorite]);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!room?._id) return;
+
+    const previousState = localIsFav;
+    const nextState = !previousState;
+
+    // ⚡ التوجل السحري: غير الحالة في الفرونت إند فوراً قبل ما الـ API ترد!
+    setLocalIsFav(nextState);
+
+    try {
+      if (previousState) {
+        await favsAPI.deleteFromFavorites(room._id, room._id);
+        toast.success("Removed from favorites");
+      } else {
+        await favsAPI.addToFavorites(room._id);
+        toast.success("Added to favorites! ❤️");
+      }
+
+      // لو الصفحة الأب محتاجة تعرف إن الـ الـ state اتغيرت (عشان الفيف لست تحذف الكارت مثلاً)
+      if (onToggleSuccess) {
+        onToggleSuccess(room._id, nextState);
+      }
+    } catch (err: any) {
+      // ⏪ لو الريكويست فشل أو حصل تيم أوت، ارجع للحالة القديمة ورجّع القلب لأصله
+      setLocalIsFav(previousState);
+      toast.error(err.response?.data?.message || "Connection error, try again");
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -40,9 +91,9 @@ export default function RoomCard({ room , height = 220 , showDiscount = false}: 
     >
       <Box
         component="img"
-        src={room.images.length != 0 ? room.images[0] : noImage}
+        src={room.images && room.images.length !== 0 ? room.images[0] : noImage}
         alt={`Room ${room.roomNumber}`}
-        sx={{width: "100%", height: height, objectFit: "cover", display: "block"}}
+        sx={{ width: "100%", height: height, objectFit: "cover", display: "block" }}
       />
 
       {/* Hover overlay */}
@@ -61,25 +112,24 @@ export default function RoomCard({ room , height = 220 , showDiscount = false}: 
         }}
       >
         <IconButton
-          sx={{
-            color: "#FFF",
-            transition: "all 0.2s ease",
-          }}
-          onClick={()=> navigate(`/room-details/${room._id}`)}
+          sx={{ color: "#FFF", transition: "all 0.2s ease" }}
+          onClick={() => navigate(`/room-details/${room._id}`)}
         >
           <VisibilityOutlinedIcon fontSize="large" />
         </IconButton>
 
         <IconButton
           sx={{
-            color: "#FFF",
+            color: localIsFav ? "#FF498B" : "#FFF", // شغال على الـ local state الفورية
             transition: "all 0.2s ease",
           }}
+          onClick={handleFavoriteClick}
         >
           <FavoriteIcon fontSize="large" />
         </IconButton>
       </Box>
 
+      {/* شارة السعر */}
       <Box
         sx={{
           position: "absolute",
@@ -88,8 +138,8 @@ export default function RoomCard({ room , height = 220 , showDiscount = false}: 
           bgcolor: "#FF498B",
           color: "#fff",
           width: "50%",
-          display:'flex',
-          justifyContent: 'center',
+          display: "flex",
+          justifyContent: "center",
           py: 1.5,
           borderBottomLeftRadius: "15px",
         }}
@@ -99,6 +149,7 @@ export default function RoomCard({ room , height = 220 , showDiscount = false}: 
         </Typography>
       </Box>
 
+      {/* تفاصيل الغرفة */}
       <Box
         sx={{
           position: "absolute",
