@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 import Spinner from "../../../Shared/Spinner/Spinner";
 import RoomCard from "../../../Shared/RoomCard/RoomCard";
-import noImage from "../../../../assets/images/noImage.png";
+import noImage from "../../../../assets/images/noData.avif";
 import { useFavorites } from "../../../../context/FavoritesContext";
 
 export default function FavList() {
@@ -16,28 +16,30 @@ export default function FavList() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justify: "space-between",
-          px: 4,
-          py: 2,
-          mb: 4,
-        }}
-      >
-        <BreadCrumbs />
-
+       <Box sx={{ py: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: {
+              xs: "center",
+              md: "flex-start",
+            },
+            mb: { xs: 2, md: 0 },
+          }}
+        >
+          <BreadCrumbs />
+        </Box>
         <Typography
           variant="h4"
           sx={{
+            textAlign: "center",
             fontWeight: 700,
             color: "#152C5B",
-            textAlign: "center",
-            flex: 1,
+            fontSize: { xs: "1.5rem", md: "2rem" },
           }}
         >
-          Your Favorites
+          Favourites
         </Typography>
       </Box>
 

@@ -41,9 +41,10 @@ export interface CreateCommentRequest {
 }
 
 // booking card
-export interface BookingCardProps{
-    price: number;
-    discount: number;
+export interface BookingCardProps {
+  roomId: string;
+  price: number;
+  discount: number;
 }
 
 // room info

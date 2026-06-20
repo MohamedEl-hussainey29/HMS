@@ -40,13 +40,14 @@ export default function Header() {
     formState: { errors },
   } = useForm<HeaderForm>();
 
-  // Extract onChange from each register call to merge manually
   const { onChange: onStartDateChange, ...startDateRest } = register(
     "startDate",
     { required: "Start Date is required!" },
   );
   const { onChange: onEndDateChange, ...endDateRest } = register("endDate", {
     required: "End Date is required!",
+    validate: (value, formValues) =>
+      new Date(value) > new Date(formValues.startDate) || "End date must be after start date",
   });
   const { onChange: onCapacityChange, ...capacityRest } = register("capacity", {
     required: "Capacity is required!",
