@@ -1,21 +1,22 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
+import { Box, Typography, Button, TextField, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { CommentsFormData } from "../Types/types";
 import { RoomsAPI } from "../../../../../../api";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 interface commentsProps {
    roomId?: string
 }
 
 export default function Comments({roomId}: commentsProps) {
-
-  const {register, handleSubmit, reset} = useForm<CommentsFormData>();
+  const [submitLoading , setSubmitLoading] = useState(false);
+  const {register, handleSubmit , formState: { errors }, reset} = useForm<CommentsFormData>();
 
   const onSubmit = async (data: CommentsFormData) => {
-    
-     try {
+    setSubmitLoading(true);
+    try {
       const response = await RoomsAPI.createComment({...data, roomId: roomId!});
       toast.success(response.data.message)
       reset();
@@ -25,7 +26,9 @@ export default function Comments({roomId}: commentsProps) {
         toast.error(error.response?.data.message);
       }
       
-     }   
+     }finally{
+      setSubmitLoading(false);
+     }
   }
   
   return<>
@@ -58,7 +61,9 @@ export default function Comments({roomId}: commentsProps) {
                 },
               },
             }}
-            {...register('comment')}
+            error={!!errors?.comment}
+            helperText={errors?.comment?.message}
+            {...register('comment' , {required: "Please , Fill this Field!"})}
           />
 
           <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
@@ -67,7 +72,7 @@ export default function Comments({roomId}: commentsProps) {
             variant="contained"
             sx={{ bgcolor: "#3252DF", px: 6, fontSize: "18px", textTransform: "none" }}
           >
-            Send
+            {submitLoading? <CircularProgress size="30px" aria-label="Loading…" sx={{color: "#FFF"}} />: "Send"}
           </Button>
         </Box>
         </Box>

@@ -1,17 +1,19 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
+import { Box, Typography, Button, TextField, CircularProgress } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { useForm, Controller } from "react-hook-form";
 import type { ReviewFormData } from "../Types/types";
 import { RoomsAPI } from "../../../../../../api";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 interface ReviewsProps {
   roomId?: string;
 }
 
 export default function Reviews({ roomId }: ReviewsProps) {
-  const { register, handleSubmit, control, reset } = useForm<ReviewFormData>({
+  const [submitLoading , setSubmitLoading] = useState(false);
+  const { register, handleSubmit, formState: { errors } ,control, reset } = useForm<ReviewFormData>({
     defaultValues: {
       rating: 2,
       review: "",
@@ -19,7 +21,7 @@ export default function Reviews({ roomId }: ReviewsProps) {
   });
 
   const onSubmit = async (data: ReviewFormData) => {
-
+    setSubmitLoading(true)
     if (!roomId) return;
     try {
       const response = await RoomsAPI.createReview({
@@ -35,6 +37,8 @@ export default function Reviews({ roomId }: ReviewsProps) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message);
       }
+    }finally{
+      setSubmitLoading(false)
     }
   };
  
@@ -93,7 +97,9 @@ export default function Reviews({ roomId }: ReviewsProps) {
                 },
               },
             }}
-            {...register("review")}
+            error={!!errors?.review}
+            helperText={errors?.review?.message}
+            {...register("review" , {required: "Please , Fill this Field!"})}
           />
           <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
             <Button
@@ -106,7 +112,7 @@ export default function Reviews({ roomId }: ReviewsProps) {
                 textTransform: "none",
               }}
             >
-              Rate
+              {submitLoading? <CircularProgress size="30px" aria-label="Loading…" sx={{color: "#FFF"}} />: "Rate"}
             </Button>
           </Box>
         </Box>
