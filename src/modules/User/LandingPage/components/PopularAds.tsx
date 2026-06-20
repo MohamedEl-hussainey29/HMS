@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Typography } from "@mui/material";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { AdsAPI, favsAPI } from "../../../../api";
+import { useCallback, useContext } from "react";
+import { AdsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
 import RoomCard from "../../../Shared/RoomCard/RoomCard";
@@ -10,7 +10,6 @@ import { AuthContext } from "../../../../context/AuthContext";
 
 export default function PopularAds() {
     const { userData }: any = useContext(AuthContext);
-    const [favIds, setFavIds] = useState<string[]>([]);
 
     const fetchAds = useCallback(() => {
         return AdsAPI.getAllAdsByUser({ page: 1, size: 5 });
@@ -21,32 +20,6 @@ export default function PopularAds() {
         [userData],
         !!userData
     );
-
-    const fetchFavoriteIds = async () => {
-        if (!userData) return;
-        try {
-            const res = await favsAPI.getUserFavorites({ page: 1, size: 100 });
-            const favoriteItem = res?.data?.data?.favoriteRooms?.[0] ?? res?.data?.favoriteRooms?.[0];
-            const rooms = favoriteItem?.rooms ?? [];
-            setFavIds(rooms.map((r: any) => r._id));
-        } catch (err) {
-            console.error("Error fetching favorite IDs:", err);
-        }
-    };
-
-    useEffect(() => {
-        if (userData) {
-            fetchFavoriteIds();
-        }
-    }, [userData]);
-
-    const handleLocalToggle = (roomId: string, isFav: boolean) => {
-        if (isFav) {
-            setFavIds((prev) => [...prev, roomId]);
-        } else {
-            setFavIds((prev) => prev.filter((id) => id !== roomId)); 
-        }
-    };
 
     const displayedAds = ads?.data?.ads ?? [];
     const count = displayedAds.length;
@@ -93,15 +66,12 @@ export default function PopularAds() {
                         <Box sx={{ display: "grid", gap: "12px", ...getGridConfig() }}>
                             {displayedAds.map((ad, index) => {
                                 const isBigCard = index === 0 && isBigLayout;
-                                const isRoomFavorite = favIds.includes(ad.room?._id);
 
                                 return (
                                     <Box key={ad._id} sx={{ ...getItemSx(index), display: "flex", flexDirection: "column" }}>
                                         <RoomCard
                                             room={ad.room}
                                             height={isBigCard ? "100%" : 220}
-                                            isFavorite={isRoomFavorite}
-                                            onToggleSuccess={handleLocalToggle}
                                         />
                                     </Box>
                                 );

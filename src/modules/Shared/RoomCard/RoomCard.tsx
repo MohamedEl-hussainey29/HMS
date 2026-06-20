@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 import noImage from "../../../assets/images/Screenshot 2026-06-17 024622.png";
 import { toast } from "react-toastify";
 import { favsAPI } from "../../../api";
-import { useState, useEffect } from "react";
+import { useFavorites } from "../../../context/FavoritesContext";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../context/AuthContext";
+import AuthRequiredDialog from "../AuthRequiredDialog/AuthRequiredDialog";
 
 export interface Room {
   _id: string;
@@ -24,38 +27,29 @@ export interface Room {
 interface RoomCardProps {
   room: Room;
   height?: number | string;
-  showPrice?: boolean;
   showDiscount?: boolean;
-  isFavorite?: boolean;
-  onToggleSuccess?: (roomId: string, nextState: boolean) => void; // دالة اختيارية لإبلاغ الأب بالتحديث
 }
 
-export default function RoomCard({
-  room,
-  height = 220,
-  showDiscount = false,
-  isFavorite = false,
-  onToggleSuccess,
-}: RoomCardProps) {
+export default function RoomCard({ room, height = 220, showDiscount = false }: RoomCardProps) {
   const navigate = useNavigate();
-  
-  // 🟢 حالة محلية للقلب عشان يقلب أوتوماتيك بدون انتظار السيرفر
-  const [localIsFav, setLocalIsFav] = useState(isFavorite);
-
-  // عشان لو الـ Props اللي جاية من الأب اتحدثت، الكارت يلقط التحديث
-  useEffect(() => {
-    setLocalIsFav(isFavorite);
-  }, [isFavorite]);
+  const { userData }: any = useContext(AuthContext);
+  const { isFavorite, toggleFavorite, refetchFavorites } = useFavorites();
+  const localIsFav = isFavorite(room._id);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!room?._id) return;
 
+    if (!userData) {
+      setAuthDialogOpen(true);
+      return;
+    }
+
     const previousState = localIsFav;
     const nextState = !previousState;
 
-    // ⚡ التوجل السحري: غير الحالة في الفرونت إند فوراً قبل ما الـ API ترد!
-    setLocalIsFav(nextState);
+    toggleFavorite(room._id, nextState);
 
     try {
       if (previousState) {
@@ -65,14 +59,9 @@ export default function RoomCard({
         await favsAPI.addToFavorites(room._id);
         toast.success("Added to favorites! ❤️");
       }
-
-      // لو الصفحة الأب محتاجة تعرف إن الـ الـ state اتغيرت (عشان الفيف لست تحذف الكارت مثلاً)
-      if (onToggleSuccess) {
-        onToggleSuccess(room._id, nextState);
-      }
+      refetchFavorites();
     } catch (err: any) {
-      // ⏪ لو الريكويست فشل أو حصل تيم أوت، ارجع للحالة القديمة ورجّع القلب لأصله
-      setLocalIsFav(previousState);
+      toggleFavorite(room._id, previousState); 
       toast.error(err.response?.data?.message || "Connection error, try again");
     }
   };
@@ -82,7 +71,6 @@ export default function RoomCard({
       sx={{
         borderRadius: 4,
         overflow: "hidden",
-        border: "0",
         position: "relative",
         cursor: "pointer",
         height: "100%",
@@ -93,10 +81,9 @@ export default function RoomCard({
         component="img"
         src={room.images && room.images.length !== 0 ? room.images[0] : noImage}
         alt={`Room ${room.roomNumber}`}
-        sx={{ width: "100%", height: height, objectFit: "cover", display: "block" }}
+        sx={{ width: "100%", height, objectFit: "cover", display: "block" }}
       />
 
-      {/* Hover overlay */}
       <Box
         className="hover-overlay"
         sx={{
@@ -111,25 +98,18 @@ export default function RoomCard({
           gap: 2,
         }}
       >
-        <IconButton
-          sx={{ color: "#FFF", transition: "all 0.2s ease" }}
-          onClick={() => navigate(`/room-details/${room._id}`)}
-        >
+        <IconButton sx={{ color: "#FFF" }} onClick={() => navigate(`/room-details/${room._id}`)}>
           <VisibilityOutlinedIcon fontSize="large" />
         </IconButton>
 
         <IconButton
-          sx={{
-            color: localIsFav ? "#FF498B" : "#FFF", // شغال على الـ local state الفورية
-            transition: "all 0.2s ease",
-          }}
+          sx={{ color: localIsFav ? "#FF498B" : "#FFF", transition: "all 0.2s ease" }}
           onClick={handleFavoriteClick}
         >
           <FavoriteIcon fontSize="large" />
         </IconButton>
       </Box>
 
-      {/* شارة السعر */}
       <Box
         sx={{
           position: "absolute",
@@ -149,7 +129,6 @@ export default function RoomCard({
         </Typography>
       </Box>
 
-      {/* تفاصيل الغرفة */}
       <Box
         sx={{
           position: "absolute",
@@ -168,6 +147,11 @@ export default function RoomCard({
           Capacity: {room.capacity}
         </Typography>
       </Box>
+      <AuthRequiredDialog
+        open={authDialogOpen}
+        onClose={() => setAuthDialogOpen(false)}
+        action="add rooms to favorites"
+      />
     </Box>
   );
 }
