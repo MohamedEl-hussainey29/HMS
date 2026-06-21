@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  TextField,
-  Typography,
-} from "@mui/material";
+import {Box,Button,CircularProgress,Divider,TextField,Typography} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import type { BookingCardProps } from "../Types/types";
 import { useContext, useMemo, useState } from "react";
@@ -33,17 +26,9 @@ export default function BookingCard({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<BookingForm>({
-    defaultValues: { startDate, endDate },
-  });
+  const { register, handleSubmit, formState: { errors }, } = useForm<BookingForm>({defaultValues: { startDate, endDate }});
 
-  const { onChange: onStartDateChange, ...startDateRest } = register(
-    "startDate",
-    {
+  const { onChange: onStartDateChange, ...startDateRest } = register("startDate",{
       required: "Start date is required",
     },
   );
@@ -84,7 +69,7 @@ export default function BookingCard({
     discountedPrice,
   );
 
-  const onSubmit = async (data: BookingForm) => {
+  const handleBooking = async (data: BookingForm) => {
     if (!userData) {
       setAuthDialogOpen(true);
       return;
@@ -92,14 +77,24 @@ export default function BookingCard({
 
     setIsSubmitting(true);
     try {
-      await BookingsAPI.CreateBooking({
+      const response = await BookingsAPI.CreateBooking({
         startDate: data.startDate,
         endDate: data.endDate,
-        room: roomId,
+        room: id ?? roomId,
         totalPrice,
       });
-      toast.success("Booking created successfully!");
+
+      toast.success(response.data.message);
+
+      const bookingId = response.data.data.booking._id;
+      const bookingSummary = {
+        totalPrice: response.data.data.booking.totalPrice,
+      };
+      localStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
+
+      navigate(`/payment/${bookingId}`);
     } catch (err: any) {
+      console.log(err);
       toast.error(
         err.response?.data?.message || "Failed to create booking, try again",
       );
@@ -108,34 +103,10 @@ export default function BookingCard({
     }
   };
 
-  const handleBooking = async () => {
-    try {
-      const response = await BookingsAPI.CreateBooking({
-        startDate,
-        endDate,
-        room: id!,
-        totalPrice,
-      });
-      toast.success(response.data.message);
-      const bookingId = response.data.data.booking._id;
-
-      const bookingSummary = {
-        totalPrice: response.data.data.booking.totalPrice,
-      };
-      localStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
-
-      toast.success(response.data.message);
-      navigate(`/payment/${bookingId}`);
-    } catch (error) {
-      console.log(error);
-      toast.error("Booking failed");
-    }
-  };
-
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleBooking)}
       sx={{
         p: { xs: 3, sm: 4, md: 6 },
         border: "1px solid #E5E5E5",
@@ -314,7 +285,6 @@ export default function BookingCard({
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
           <Button
-            onClick={handleBooking}
             type="submit"
             variant="contained"
             disabled={isSubmitting}
