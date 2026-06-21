@@ -1,27 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Typography } from "@mui/material";
-import { useCallback, useContext } from "react";
-import { AdsAPI } from "../../../../api";
-import useGetData from "../../../../hooks/useGetData";
-import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
 import RoomCard from "../../../Shared/RoomCard/RoomCard";
 import Spinner from "../../../Shared/Spinner/Spinner";
-import { AuthContext } from "../../../../context/AuthContext";
+import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
 
-export default function PopularAds() {
-    const { userData }: any = useContext(AuthContext);
+interface PopularAdsProps{
+    ads?: AdsResponse | null;
+    isLoading: boolean;
+}
 
-    const fetchAds = useCallback(() => {
-        return AdsAPI.getAllAdsByUser({ page: 1, size: 5 });
-    }, []);
 
-    const { data: ads, isLoading, error } = useGetData<AdsResponse>(
-        fetchAds,
-        [userData],
-        !!userData
-    );
+export default function PopularAds({ads , isLoading}: PopularAdsProps) {
 
-    const displayedAds = ads?.data?.ads ?? [];
+
+
+    const displayedAds = (ads?.data?.ads ?? []).slice(0, 5);
     const count = displayedAds.length;
     const isBigLayout = count === 5 || count === 3;
 
@@ -54,32 +46,30 @@ export default function PopularAds() {
 
     return (
         <>
-            {userData && (
-                <Box sx={{ mt: 12 }}>
-                    <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", color: "#152C5B", mb: 2 }}>
-                        Most popular ads
-                    </Typography>
+            <Box sx={{ mt: 12 }}>
+                <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", color: "#152C5B", mb: 2 }}>
+                    Most popular ads
+                </Typography>
 
-                    {isLoading && <Spinner />}
+                {isLoading && <Spinner />}
 
-                    {!isLoading && !error && displayedAds.length > 0 && (
-                        <Box sx={{ display: "grid", gap: "12px", ...getGridConfig() }}>
-                            {displayedAds.map((ad, index) => {
-                                const isBigCard = index === 0 && isBigLayout;
+                {!isLoading && displayedAds.length > 0 && (
+                    <Box sx={{ display: "grid", gap: "12px", ...getGridConfig() }}>
+                        {displayedAds.map((ad, index) => {
+                            const isBigCard = index === 0 && isBigLayout;
 
-                                return (
-                                    <Box key={ad._id} sx={{ ...getItemSx(index), display: "flex", flexDirection: "column" }}>
-                                        <RoomCard
-                                            room={ad.room}
-                                            height={isBigCard ? "100%" : 220}
-                                        />
-                                    </Box>
-                                );
-                            })}
-                        </Box>
-                    )}
-                </Box>
-            )}
+                            return (
+                                <Box key={ad._id} sx={{ ...getItemSx(index), display: "flex", flexDirection: "column" }}>
+                                    <RoomCard
+                                        room={ad.room}
+                                        height={isBigCard ? "100%" : 220}
+                                    />
+                                </Box>
+                            );
+                        })}
+                    </Box>
+                )}
+            </Box>
         </>
     );
 }
