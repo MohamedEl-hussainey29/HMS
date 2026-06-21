@@ -15,8 +15,8 @@ export default function FavList() {
   const showSpinner = authLoading || isLoading;
 
   useEffect(() => {
-      sessionStorage.removeItem("roomFilters");
-    }, []);
+    sessionStorage.removeItem("roomFilters");
+  }, []);
 
   return (
     <>
