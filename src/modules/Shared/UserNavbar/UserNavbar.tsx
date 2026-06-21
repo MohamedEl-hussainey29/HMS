@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Avatar, Box, Button, CircularProgress, Divider, Grid, IconButton, Menu, Typography, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress, Divider, Grid, IconButton, Menu, Typography, Drawer, List, ListItem, ListItemButton, ListItemText, Badge } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { AuthAPI } from "../../../api";
+import { useFavorites } from "../../../context/FavoritesContext";
 
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -31,6 +32,9 @@ export default function UserNavbar() {
   const currentUserId = userData?._id || (userData as any)?.id;
 
   const isLoggedIn = Boolean(currentUserId);
+
+  const { favoriteIds } = useFavorites();
+  const favoritesCount = favoriteIds.size;
 
   const [apiUser, setApiUser] = useState<ApiUserData | null>(null);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
@@ -235,7 +239,15 @@ export default function UserNavbar() {
           {isLoggedIn && (
             <>
               <Button sx={navLinkStyle("#")} onClick={() => navigate("#")}>Reviews</Button>
-              <Button sx={navLinkStyle("/favourites")} onClick={() => navigate("/favourites")}>Favorites</Button>
+              <Badge
+                badgeContent={favoritesCount}
+                color="primary"
+                sx={{
+                  '& .MuiBadge-badge': {right: 14, top: 6, backgroundColor: '#365CF5',}
+                }}
+              >
+                <Button sx={navLinkStyle("/favourites")} onClick={() => navigate("/favourites")}>Favorites</Button>
+              </Badge>
             </>
           )}
         </Box>
@@ -336,7 +348,10 @@ export default function UserNavbar() {
                       borderRadius: '8px',
                       mb: 0.5,
                       backgroundColor: isActive ? 'rgba(54, 92, 245, 0.08)' : 'transparent',
-                      color: isActive ? '#365CF5' : '#333'
+                      color: isActive ? '#365CF5' : '#333',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}
                   >
                     <ListItemText
@@ -345,6 +360,13 @@ export default function UserNavbar() {
                         primary: { sx: { fontWeight: isActive ? 600 : 500 } },
                       }}
                     />
+                    {item.path === "/favourites" && favoritesCount > 0 && (
+                      <Badge
+                        badgeContent={favoritesCount}
+                        color="primary"
+                        sx={{ '& .MuiBadge-badge': { position: 'static', transform: 'none', backgroundColor: '#365CF5' } }}
+                      />
+                    )}
                   </ListItemButton>
                 </ListItem>
               );
