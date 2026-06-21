@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Avatar, Box, Button, CircularProgress, Divider, Grid, IconButton, Menu, Typography, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -190,7 +191,7 @@ export default function UserNavbar() {
                 <PhoneAndroidIcon sx={{ color: '#1565c0', fontSize: '1.15rem' }} />
                 <Box>
                   <Typography variant="caption" sx={{ color: '#9e9e9e', display: 'block', lineHeight: 1 }}>Phone Number</Typography>
-                  <Typography variant="body2" sx={{ color: '#2c3e50', fontWeight: 600, fontSize: '0.85rem' }}>{displayPhone}</Typography>
+                  <Typography variant="body2" sx={{ color: '#2c3e50', fontWeight: 600, fontSize: '0.85rem' }}>0{displayPhone}</Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -204,8 +205,8 @@ export default function UserNavbar() {
           </Box>
 
           {!isMobileView && (
-            <Button fullWidth color="error" onClick={logout} sx={{ textTransform: 'none', justifyContent: 'left', py: 1, mt: 2 }}>
-              Logout
+            <Button variant="outlined" fullWidth color="error" onClick={logout} sx={{ textTransform: 'capitalize', justifyContent: 'center', py: 1, mt: 2 }}>
+              logout from account
             </Button>
           )}
 
@@ -233,7 +234,7 @@ export default function UserNavbar() {
           <Button sx={navLinkStyle("/explore-rooms")} onClick={() => navigate("/explore-rooms")}>Explore</Button>
           {isLoggedIn && (
             <>
-              <Button sx={navLinkStyle("/#")} onClick={() => navigate("/#")}>Reviews</Button>
+              <Button sx={navLinkStyle("#")} onClick={() => navigate("#")}>Reviews</Button>
               <Button sx={navLinkStyle("/favourites")} onClick={() => navigate("/favourites")}>Favorites</Button>
             </>
           )}
@@ -322,7 +323,7 @@ export default function UserNavbar() {
               { label: "Home", path: "/" },
               { label: "Explore Rooms", path: "/explore-rooms" },
               ...(isLoggedIn ? [
-                { label: "My Reviews", path: "/reviews" },
+                { label: "My Reviews", path: "#" },
                 { label: "Favorites", path: "/favourites" }
               ] : [])
             ].map((item) => {
@@ -340,7 +341,9 @@ export default function UserNavbar() {
                   >
                     <ListItemText
                       primary={item.label}
-                      primaryTypographyProps={{ fontWeight: isActive ? 600 : 500 }}
+                      slotProps={{
+                        primary: { sx: { fontWeight: isActive ? 600 : 500 } },
+                      }}
                     />
                   </ListItemButton>
                 </ListItem>

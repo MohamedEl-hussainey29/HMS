@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Grid, Typography } from "@mui/material";
 import BreadCrumbs from "../../../Shared/BreadCrumbs/BreadCrumbs";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 import Spinner from "../../../Shared/Spinner/Spinner";
 import RoomCard from "../../../Shared/RoomCard/RoomCard";
@@ -13,6 +13,10 @@ export default function FavList() {
   const { favoriteRooms, isLoading } = useFavorites();
 
   const showSpinner = authLoading || isLoading;
+
+  useEffect(() => {
+      sessionStorage.removeItem("roomFilters");
+    }, []);
 
   return (
     <>
