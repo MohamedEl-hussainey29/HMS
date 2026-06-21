@@ -26,6 +26,7 @@ import PaymentLayout from './modules/Shared/Layouts/PaymentLayout/PaymentLayout'
 import PaymentForm from './modules/User/Payment/components/PaymentForm';
 import ProtectedRoutes from './modules/Shared/ProtectedRoutes/ProtectedRoutes';
 
+
 function App() {
   const routes = createBrowserRouter([
     {
@@ -67,7 +68,7 @@ function App() {
         {path: 'favourites' , element: <ProtectedRoutes role='user'><FavList/></ProtectedRoutes>},
       ]
     },{
-      path: '/payment',
+      path: '/payment/:bookingId',
       element: <ProtectedRoutes role='user'><PaymentLayout/></ProtectedRoutes>,
       errorElement: <NotFound/>,
       children:[
@@ -77,6 +78,7 @@ function App() {
   ])
   return (
       <>
+      
       <ToastContainer
         position="top-right"
         autoClose={3000}
