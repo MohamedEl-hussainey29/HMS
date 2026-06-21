@@ -10,7 +10,7 @@ export default function PaymentStepper({completed}: PaymentStepperProps) {
    
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
 
         <Stepper activeStep={completed ? 2 : 1} alternativeLabel sx={{ width: 400 }}>
 
