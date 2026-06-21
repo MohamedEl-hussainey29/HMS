@@ -1,15 +1,15 @@
 import axiosClient from "../axiosClient";
 
-interface BookingResponse{
-  startDate: string;
-  endDate: string;
-  room: string;
-  totalPrice: number
-}
 
 interface PaginationParams {
   page: number;
   size: number;
+}
+export interface CreateBookingData {
+  startDate: string;
+  endDate: string;
+  room: string;
+  totalPrice: number;
 }
 
 export const getAllBookings = (params?: PaginationParams) => {
@@ -25,7 +25,7 @@ export const DeleteBooking = (id: string) => {
   return axiosClient.delete(`/admin/booking/${id}`)
 }
 
-export const CreateBooking = (data: BookingResponse) => {
+export const CreateBooking = (data: CreateBookingData) => {
   return axiosClient.post(`/portal/booking`, data)
 }
 

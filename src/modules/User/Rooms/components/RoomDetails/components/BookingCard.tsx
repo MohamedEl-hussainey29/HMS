@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, CircularProgress, Divider, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import type { BookingCardProps } from "../Types/types";
 import { useContext, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useBooking } from "../../../../../../context/BookingContext";
-import { AuthContext } from "../../../../../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 import { BookingsAPI } from "../../../../../../api";
+import { AuthContext } from "../../../../../../context/AuthContext";
 import AuthRequiredDialog from "../../../../../Shared/AuthRequiredDialog/AuthRequiredDialog";
 
 interface BookingForm {
@@ -15,24 +23,39 @@ interface BookingForm {
   endDate: string;
 }
 
-export default function BookingCard({ roomId, price, discount }: BookingCardProps) {
+export default function BookingCard({
+  roomId,
+  price,
+  discount,
+}: BookingCardProps) {
   const { startDate, endDate, setStartDate, setEndDate } = useBooking();
   const { userData }: any = useContext(AuthContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<BookingForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BookingForm>({
     defaultValues: { startDate, endDate },
   });
 
-  const { onChange: onStartDateChange, ...startDateRest } = register("startDate", {
-    required: "Start date is required",
-  });
+  const { onChange: onStartDateChange, ...startDateRest } = register(
+    "startDate",
+    {
+      required: "Start date is required",
+    },
+  );
   const { onChange: onEndDateChange, ...endDateRest } = register("endDate", {
     required: "End date is required",
     validate: (value, formValues) =>
-      new Date(value) > new Date(formValues.startDate) || "End date must be after start date",
+      new Date(value) > new Date(formValues.startDate) ||
+      "End date must be after start date",
   });
+
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const { nights, discountedPrice, totalPrice } = useMemo(() => {
     const start = new Date(startDate);
@@ -77,9 +100,35 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
       });
       toast.success("Booking created successfully!");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to create booking, try again");
+      toast.error(
+        err.response?.data?.message || "Failed to create booking, try again",
+      );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleBooking = async () => {
+    try {
+      const response = await BookingsAPI.CreateBooking({
+        startDate,
+        endDate,
+        room: id!,
+        totalPrice,
+      });
+      toast.success(response.data.message);
+      const bookingId = response.data.data.booking._id;
+
+      const bookingSummary = {
+        totalPrice: response.data.data.booking.totalPrice,
+      };
+      localStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
+
+      toast.success(response.data.message);
+      navigate(`/payment/${bookingId}`);
+    } catch (error) {
+      console.log(error);
+      toast.error("Booking failed");
     }
   };
 
@@ -96,7 +145,14 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
       }}
     >
       <Box sx={{ mb: 5 }}>
-        <Typography sx={{ fontWeight: "bold", fontSize: { xs: "18px", md: "20px" }, mb: 3, color: "#152C5B" }}>
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            fontSize: { xs: "18px", md: "20px" },
+            mb: 3,
+            color: "#152C5B",
+          }}
+        >
           Start Booking
         </Typography>
 
@@ -113,7 +169,11 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
           {discount > 0 && (
             <Box
               component="span"
-              sx={{ color: "#B0B0B0", textDecoration: "line-through", fontSize: { xs: "16px", md: "20px" } }}
+              sx={{
+                color: "#B0B0B0",
+                textDecoration: "line-through",
+                fontSize: { xs: "16px", md: "20px" },
+              }}
             >
               ${formattedPrice}
             </Box>
@@ -121,12 +181,22 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
 
           <Box
             component="span"
-            sx={{ color: "#1ABC9C", fontSize: { xs: "28px", sm: "32px", md: "36px" }, fontWeight: 600 }}
+            sx={{
+              color: "#1ABC9C",
+              fontSize: { xs: "28px", sm: "32px", md: "36px" },
+              fontWeight: 600,
+            }}
           >
             ${formattedDiscountedPrice}
           </Box>
 
-          <Box component="span" sx={{ color: "#B0B0B0", fontSize: { xs: "16px", sm: "20px", md: "24px" } }}>
+          <Box
+            component="span"
+            sx={{
+              color: "#B0B0B0",
+              fontSize: { xs: "16px", sm: "20px", md: "24px" },
+            }}
+          >
             per night
           </Box>
         </Typography>
@@ -244,6 +314,7 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
           <Button
+            onClick={handleBooking}
             type="submit"
             variant="contained"
             disabled={isSubmitting}
@@ -261,7 +332,14 @@ export default function BookingCard({ roomId, price, discount }: BookingCardProp
             }}
           >
             {isSubmitting ? (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  justifyContent: "center",
+                }}
+              >
                 <CircularProgress size="20px" sx={{ color: "#fff" }} />
                 Processing...
               </Box>
