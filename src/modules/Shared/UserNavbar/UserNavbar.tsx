@@ -238,7 +238,6 @@ export default function UserNavbar() {
           <Button sx={navLinkStyle("/explore-rooms")} onClick={() => navigate("/explore-rooms")}>Explore</Button>
           {isLoggedIn && (
             <>
-              <Button sx={navLinkStyle("#")} onClick={() => navigate("#")}>Reviews</Button>
               <Badge
                 badgeContent={favoritesCount}
                 color="primary"
@@ -335,7 +334,6 @@ export default function UserNavbar() {
               { label: "Home", path: "/" },
               { label: "Explore Rooms", path: "/explore-rooms" },
               ...(isLoggedIn ? [
-                { label: "My Reviews", path: "#" },
                 { label: "Favorites", path: "/favourites" }
               ] : [])
             ].map((item) => {
