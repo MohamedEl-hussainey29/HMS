@@ -151,6 +151,7 @@ export default function AdsList() {
     {
       id: "price",
       label: "Price ($)",
+      align: "center",
       render: (ad) => ad.room.price,
     },
     {
