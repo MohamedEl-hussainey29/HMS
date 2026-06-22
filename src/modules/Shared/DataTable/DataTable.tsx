@@ -1,4 +1,4 @@
-import {Box, Paper,Skeleton,styled,Table,TableBody,TableCell,tableCellClasses,TableContainer,TableHead,TablePagination,TableRow} from "@mui/material";
+import {Box, Paper,Skeleton,styled,Table,TableBody,TableCell,tableCellClasses,TableContainer,TableHead,TablePagination,TableRow,Tooltip,Typography} from "@mui/material";
 import { type ReactNode } from "react";
 import NoData from "../NoData/NoData";
 
@@ -7,6 +7,7 @@ export interface TableColumn<T> {
   label: string;
   align?: "left" | "center" | "right";
   render: (row: T) => ReactNode;
+  values?: (row: T) => string[];
 }
 
 interface DataTableProps<T> {
@@ -55,6 +56,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+
+function MultiValueCell({ values }: { values: string[] }) {
+  if (values.length === 0) return <Typography variant="body2">—</Typography>;
+
+  const [first, ...rest] = values;
+
+  if (rest.length === 0) {
+    return <Typography variant="body2">{first}</Typography>;
+  }
+
+  return (
+    <Tooltip title={rest.join(", ")} arrow enterTouchDelay={0} leaveTouchDelay={3000} >
+      <Box
+        sx={{display: "inline-flex", alignItems: "center", gap: 0.5, cursor: "pointer"}}>
+        <Typography variant="body2">{first}</Typography>
+        <Typography variant="body2" sx={{ color: "#203FC7", fontWeight: 500 }}>
+          +{rest.length}
+        </Typography>
+      </Box>
+    </Tooltip>
+  );
+}
 
 export default function DataTable<T>({
   item,
@@ -107,7 +131,11 @@ export default function DataTable<T>({
                       key={column.id}
                       align={column.align}
                     >
-                      {column.render(row)}
+                      {column.values ? (
+                        <MultiValueCell values={column.values(row)} />
+                      ) : (
+                        column.render(row)
+                      )}
                     </TableCell>
                   ))}
                 </StyledTableRow>
