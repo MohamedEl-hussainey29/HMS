@@ -62,9 +62,12 @@ export default function AuthContext() {
   return (
     <Box
       sx={{
-        height: "100dvh",
-        overflow: "hidden",
-        bgcolor: "#f8f8f8",
+        height: "100vh",
+        overflow: {
+          xs : 'auto',
+          md : 'hidden'
+        },
+        bgcolor: "#fff",
         p: 2,
         boxSizing: "border-box",
       }}
@@ -78,14 +81,12 @@ export default function AuthContext() {
             flexDirection: "column",
             justifyContent: "center",
             px: { xs: 2, md: 8 },
+            mt: 5
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 6, flexShrink: 0}}>
-            <Box component="span" sx={{ color: "#365CF5"}}>Stay</Box>
-            <Box component="span" sx={{ color: "black"}}>cation.</Box>
-          </Typography>
 
-          <Box sx={{width: "100%",maxWidth: 420,flexShrink: 1,}}>
+          <Box sx={{width: "100%",maxWidth: 500,flexShrink: 1, mx: 'auto'}}>
+
             <Outlet />
           </Box>
         </Grid>
