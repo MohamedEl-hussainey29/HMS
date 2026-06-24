@@ -9,6 +9,7 @@ import LocalParkingOutlinedIcon from "@mui/icons-material/LocalParkingOutlined";
 import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import type { ReactNode } from "react";
 import type { RoomInfoProps } from "../Types/types";
 
@@ -22,7 +23,8 @@ export default function RoomInfo({ facilities }: RoomInfoProps) {
     gym: <FitnessCenterOutlinedIcon />,
     parking: <LocalParkingOutlinedIcon />,
     "air conditioning": <AcUnitOutlinedIcon />,
-    bathroom: <BathtubOutlinedIcon/>
+    bathroom: <BathtubOutlinedIcon/>,
+    cleaning: <CleaningServicesIcon/>
   };
 
   const defaultFacilityIcon = <HelpOutlineOutlinedIcon />;

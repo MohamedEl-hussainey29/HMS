@@ -72,10 +72,6 @@ export default function AuthContext() {
         boxSizing: "border-box",
       }}
     >
-      <Typography variant="h5" sx={{position: "fixed",top: 25,left: 25,fontWeight: 500}}>
-        <Box component="span" sx={{ color: "#365CF5" }}>Stay</Box>
-        <Box component="span" sx={{ color: "black" }}>cation.</Box>
-      </Typography>
       <Grid container sx={{ height: "100%" }}>
         <Grid
           size={{ xs: 12, md: 6 }}

@@ -151,7 +151,8 @@ export default function RoomsList() {
       id: "facilities",
       label: "Facilities",
       align: "center",
-      render: (room) => room.facilities?.[0]?.name ?? "N/A",
+      render: (room) => room.facilities?.[0]?.name ?? "N/A", // kept as fallback, unused once values is set
+      values: (room) => room.facilities?.map((f) => f.name) ?? [],
     },
     {
       id: "updatedAt",

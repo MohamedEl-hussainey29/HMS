@@ -5,4 +5,5 @@ export * as AdminsAPI from "./modules/admins"
 export * as BookingsAPI from "./modules/bookings"
 export * as AdsAPI from './modules/ads'
 export * as ChartsAPI from './modules/charts'
-
+export * as favsAPI from './modules/favs'
+export * as PaymentAPI from './modules/payment'

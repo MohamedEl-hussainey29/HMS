@@ -21,9 +21,19 @@ export const getAllRooms = (params?: PaginationParams) => {
   });
 };
 
+export const createRoom = (data: FormData) =>{
+  return axiosClient.post("/admin/rooms" , data);
+}
+
+export const UpdateRoom = (data: FormData , id: string) =>{
+  return axiosClient.put(`/admin/rooms/${id}` , data);
+}
+
 export const DeleteRoom = (id: string) => {
   return axiosClient.delete(`/admin/rooms/${id}`)
 }
+
+// user
 
 export const getAllRoomsByUser = (params?: GetRoomsParams) => {
   return axiosClient.get('/portal/rooms/available', {
@@ -37,14 +47,8 @@ export const getAllRoomsByUser = (params?: GetRoomsParams) => {
   });
 };
 
-// user
-export interface RoomDetailsParams{
-    startDate: string,
-    endDate: string
-}
-
-export const getRoomDetails = (id: string, params:RoomDetailsParams) => {
-       return axiosClient.get(`/portal/rooms/${id}`, {params})
+export const getRoomDetails = (id: string) => {
+       return axiosClient.get(`/portal/rooms/${id}`)
 }
 
 // user => review

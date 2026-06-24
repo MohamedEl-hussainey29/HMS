@@ -51,7 +51,7 @@ export default function NavBar() {
 
       setApiLoading(true);
       try {
-        const response = await AuthAPI.getProfile(currentUserId);
+        const response = await AuthAPI.getAdminProfile(currentUserId);
 
         const userDataFromApi = response.data?.data?.user;
         setApiUser(userDataFromApi);
