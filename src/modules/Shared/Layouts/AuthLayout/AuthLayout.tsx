@@ -2,9 +2,9 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Outlet, useLocation } from "react-router-dom";
-import loginImg from "../../../../assets/images/Login.png";
-import registerImg from "../../../../assets/images/register-verify.png";
-import forgetImg from "../../../../assets/images/forget-reset.png";
+import loginImg from "../../../../assets/images/login.webp";
+import registerImg from "../../../../assets/images/register-verify.webp";
+import forgetImg from "../../../../assets/images/forget-reset.webp";
 
 
 
@@ -101,7 +101,8 @@ export default function AuthContext() {
             <Box
               component="img"
               src={authContent.image}
-              alt="auth"
+              alt=""
+              decoding="async"
               sx={{ width: "100%", height: "100%", objectFit: "cover"}}
             />
             <Box sx={{ position: "absolute", left: 100, bottom: 40, color: "#fff"}} >

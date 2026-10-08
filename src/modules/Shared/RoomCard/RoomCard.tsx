@@ -3,7 +3,8 @@ import { Box, IconButton, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useNavigate } from "react-router-dom";
-import noImage from "../../../assets/images/Screenshot 2026-06-17 024622.png";
+import noImage from "../../../assets/images/room-placeholder.webp";
+import { optimizeImageUrl } from "../../../utils/optimizeImageUrl";
 import { toast } from "react-toastify";
 import { favsAPI } from "../../../api";
 import { useFavorites } from "../../../context/FavoritesContext";
@@ -79,8 +80,10 @@ export default function RoomCard({ room, height = 220, showDiscount = false }: R
     >
       <Box
         component="img"
-        src={room.images && room.images.length !== 0 ? room.images[0] : noImage}
+        src={room.images?.[0] ? optimizeImageUrl(room.images[0], 800) : noImage}
         alt={`Room ${room.roomNumber}`}
+        loading="lazy"
+        decoding="async"
         sx={{ width: "100%", height, objectFit: "cover", display: "block" }}
       />
 

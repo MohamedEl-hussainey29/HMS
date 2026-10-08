@@ -16,7 +16,8 @@ import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
 import useFilters from "../../../../hooks/useFilters";
 import { DataFilter } from "../../../../context/FiltersContext";
 import type { FacilitiesResponse } from "../../Facilities/components/FacilitiesList";
-import noImage from "../../../../assets/images/noImage.png"
+import noImage from "../../../../assets/images/no-image.webp"
+import { optimizeImageUrl } from "../../../../utils/optimizeImageUrl";
 
 export interface Room {
   _id: string;
@@ -122,8 +123,10 @@ export default function RoomsList() {
         room.images?.[0] ? (
           <Box
             component="img"
-            src={room.images[0]}
+            src={optimizeImageUrl(room.images[0], 160)}
             alt={room.roomNumber}
+            loading="lazy"
+            decoding="async"
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />
         ) : (
@@ -131,6 +134,8 @@ export default function RoomsList() {
             component="img"
             src={noImage}
             alt={room.roomNumber}
+            loading="lazy"
+            decoding="async"
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />
         ),

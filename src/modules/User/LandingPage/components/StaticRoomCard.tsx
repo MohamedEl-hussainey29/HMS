@@ -24,6 +24,10 @@ export default function StaticRoomCard({house}: StaticHousesInterface) {
         component="img"
         src={house.image}
         alt={house.title}
+        width={800}
+        height={533}
+        loading="lazy"
+        decoding="async"
         sx={{width: "100%", height: 200, objectFit: "cover", display: "block",borderRadius: 2,mb: 2}}
       />
 

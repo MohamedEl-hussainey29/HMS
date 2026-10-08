@@ -13,7 +13,7 @@ import {
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import headerImg from "../../../../assets/images/banner.png";
+import headerImg from "../../../../assets/images/banner.webp";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -349,9 +349,15 @@ export default function Header() {
           <Box
             component="img"
             src={headerImg}
-            alt="header image"
+            alt="Vacation home"
+            width={472}
+            height={450}
+            fetchPriority="high"
+            decoding="async"
             sx={{
               height: { xs: "260px", sm: "340px", md: "460px" },
+              width: "auto",
+              maxWidth: "100%",
               objectFit: "cover",
             }}
           />

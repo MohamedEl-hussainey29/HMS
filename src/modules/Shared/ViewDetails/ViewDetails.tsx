@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useState } from "react";
+import { optimizeImageUrl } from "../../../utils/optimizeImageUrl";
 
 interface Field {
   label: string;
@@ -105,7 +106,7 @@ export default function ViewDetails({open,handleClose,title,fields}: ViewDetails
                         <Box
                           key={i}
                           component="img"
-                          src={src}
+                          src={optimizeImageUrl(src, 160)}
                           alt={`${field.label}-${i}`}
                           onClick={() => {
                             setViewerImages(field.images ?? []);
@@ -228,7 +229,7 @@ export default function ViewDetails({open,handleClose,title,fields}: ViewDetails
         >
           <Box
             component="img"
-            src={viewerImages[currentIndex]}
+            src={optimizeImageUrl(viewerImages[currentIndex], 1400)}
             alt="Preview"
             sx={{
               maxWidth: "100%",

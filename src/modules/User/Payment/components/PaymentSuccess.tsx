@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import successImg from "../../../../assets/images/paymentSuccess.png";
+import successImg from "../../../../assets/images/payment-success.webp";
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
@@ -32,6 +32,9 @@ export default function PaymentSuccess() {
       <Box
         component="img"
         src={successImg}
+        alt="Payment completed"
+        loading="lazy"
+        decoding="async"
         sx={{
           width: { xs: "230px", sm: "225px", md: "220px" },
           height: { xs: "210px", sm: "205px", md: "200px" },

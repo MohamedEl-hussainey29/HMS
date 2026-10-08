@@ -13,7 +13,8 @@ import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirm
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
 import AdsData from "./AdsData";
 import axios, { type AxiosResponse } from "axios";
-import noImage from "../../../../assets/images/noImage.png"
+import noImage from "../../../../assets/images/no-image.webp"
+import { optimizeImageUrl } from "../../../../utils/optimizeImageUrl";
 import { DataFilter } from "../../../../context/FiltersContext";
 import useFilters from "../../../../hooks/useFilters";
 
@@ -135,8 +136,10 @@ export default function AdsList() {
         ad.room.images[0] ? (
           <Box
             component="img"
-            src={ad.room.images[0]}
+            src={optimizeImageUrl(ad.room.images[0], 160)}
             alt={ad.room.roomNumber}
+            loading="lazy"
+            decoding="async"
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />
         ) : (
@@ -144,6 +147,8 @@ export default function AdsList() {
             component="img"
             src={noImage}
             alt={ad.room.roomNumber}
+            loading="lazy"
+            decoding="async"
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />
         ),

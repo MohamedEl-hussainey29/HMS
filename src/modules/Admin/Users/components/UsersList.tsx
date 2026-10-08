@@ -6,6 +6,7 @@ import type { TableColumn } from "../../../Shared/DataTable/DataTable";
 import RowActions from "../../../Shared/RowActions/RowActions";
 import { Box, Grid, Typography } from "@mui/material";
 import defaultAvatar from "../../../../assets/images/man-avatar-profile-picture-isolated-background-avatar-profile-picture-man_1293239-4841.avif"
+import { optimizeImageUrl } from "../../../../utils/optimizeImageUrl";
 import Filters from "../../../Shared/Filters/Filters";
 import DataTable from "../../../Shared/DataTable/DataTable";
 import ViewDetails from "../../../Shared/ViewDetails/ViewDetails";
@@ -80,7 +81,7 @@ export default function UsersList() {
         user.profileImage?.[0] ? (
           <Box
             component="img"
-            src={user.profileImage}
+            src={optimizeImageUrl(user.profileImage, 160)}
             alt={user.userName}
             sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: "8px" }}
           />

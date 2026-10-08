@@ -1,13 +1,17 @@
 import { Box } from "@mui/material";
 import type { RoomGalleryProps } from "../Types/types";
-import noRoomImg from "../../../../../../assets/images/noRoom.png";
+import noRoomImg from "../../../../../../assets/images/no-room.webp";
+import { optimizeImageUrl } from "../../../../../../utils/optimizeImageUrl";
 export default function RoomGallery({ images }: RoomGalleryProps) {
   const galleryImages = images.slice(0, 5);
 
-  const renderImage = (src: string) => (
+  const renderImage = (src: string, eager = false) => (
     <Box
       component="img"
-      src={src}
+      src={optimizeImageUrl(src, eager ? 1400 : 800)}
+      alt=""
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
       sx={{
         display: "block",
         width: "100%",
@@ -46,6 +50,8 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
         component="img"
         src={noRoomImg}
         alt="No room image"
+        loading="lazy"
+        decoding="async"
         sx={{
           width: "100%",
           height: 500,
@@ -64,7 +70,7 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
           height: 500,
         }}
       >
-        {renderImage(galleryImages[0])}
+        {renderImage(galleryImages[0], true)}
       </Box>
     );
   };
@@ -79,8 +85,8 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
           height: 500,
         }}
       >
-        {galleryImages.map((image) => (
-          <Box key={image}>{renderImage(image)}</Box>
+        {galleryImages.map((image, index) => (
+          <Box key={image}>{renderImage(image, index === 0)}</Box>
         ))}
       </Box>
     );
@@ -96,7 +102,7 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
           height: '100%',
         }}
       >
-        <Box sx={{ height: "100%" }}>{renderImage(galleryImages[0])}</Box>
+        <Box sx={{ height: "100%" }}>{renderImage(galleryImages[0], true)}</Box>
 
         <Box
           sx={{
@@ -124,8 +130,8 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
           height: 500,
         }}
       >
-        {galleryImages.map((image) => (
-          <Box key={image}>{renderImage(image)}</Box>
+        {galleryImages.map((image, index) => (
+          <Box key={image}>{renderImage(image, index === 0)}</Box>
         ))}
       </Box>
     );
@@ -141,7 +147,7 @@ export default function RoomGallery({ images }: RoomGalleryProps) {
           height: '100%',
         }}
       >
-        <Box sx={{ height: "100%" }}>{renderImage(galleryImages[0])}</Box>
+        <Box sx={{ height: "100%" }}>{renderImage(galleryImages[0], true)}</Box>
 
         <Box
           sx={{

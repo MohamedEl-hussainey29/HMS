@@ -1,7 +1,7 @@
 import {Box,Grid,IconButton,Rating,Typography} from "@mui/material";
 import EastIcon from "@mui/icons-material/East";
 import WestIcon from "@mui/icons-material/West";
-import reviewImg from "../../../../assets/images/foto_keluarga.png";
+import reviewImg from "../../../../assets/images/foto-keluarga.webp";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from "swiper";
 import 'swiper/css';
@@ -54,9 +54,14 @@ export default function ReviewsSlider() {
                                 component="img"
                                 src={reviewImg}
                                 alt="Happy Family"
+                                width={405}
+                                height={541}
+                                loading="lazy"
+                                decoding="async"
                                 sx={{
                                     width: "100%",
                                     maxWidth: 350,
+                                    height: "auto",
                                     borderRadius: "12px 12px 100px 12px",
                                     display: "block",
                                 }}

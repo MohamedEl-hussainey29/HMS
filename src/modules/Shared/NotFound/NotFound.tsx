@@ -1,7 +1,7 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import notFoundImg from "../../../assets/images/notfound image.png";
+import notFoundImg from "../../../assets/images/notfound.webp";
 
 export default function NotFound() {
   const navigate = useNavigate();
