@@ -1,13 +1,48 @@
-import { Grid} from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import Header from "./Header";
 import PopularAds from "./PopularAds";
 import StaticSection from "./StaticSection";
-import AdsSlider from "./AdsSlider";
-import ReviewsSlider from "./ReviewsSlider";
-import { useCallback, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AdsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
 import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
+
+const AdsSlider = lazy(() => import("./AdsSlider"));
+const ReviewsSlider = lazy(() => import("./ReviewsSlider"));
+
+function DeferredSection({ children, minHeight }: { children: ReactNode; minHeight: number }) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldRender(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldRender(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Box ref={sectionRef} sx={{ minHeight }}>
+      {shouldRender && <Suspense fallback={<Box sx={{ minHeight }} />}>{children}</Suspense>}
+    </Box>
+  );
+}
 
 export interface Room {
   _id: string;
@@ -41,8 +76,12 @@ export default function Home() {
         <Header/>
         <PopularAds ads={ads} isLoading={isLoading}/>
         <StaticSection/>
-        <AdsSlider ads={ads} isLoading={isLoading}/>
-        <ReviewsSlider/>
+        <DeferredSection minHeight={300}>
+          <AdsSlider ads={ads} isLoading={isLoading} />
+        </DeferredSection>
+        <DeferredSection minHeight={420}>
+          <ReviewsSlider />
+        </DeferredSection>
       </Grid>
     </>
   )
