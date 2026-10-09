@@ -58,7 +58,7 @@ export default function RoomCard({ room, height = 220, showDiscount = false }: R
         toast.success("Removed from favorites");
       } else {
         await favsAPI.addToFavorites(room._id);
-        toast.success("Added to favorites! ❤️");
+        toast.success("Added to favorites");
       }
       refetchFavorites();
     } catch (err: any) {

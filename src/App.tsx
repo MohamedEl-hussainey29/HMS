@@ -1,31 +1,32 @@
 import './App.css'
+import { lazy, Suspense } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AuthLayout from './modules/Shared/Layouts/AuthLayout/AuthLayout';
-import NotFound from './modules/Shared/NotFound/NotFound';
-import Login from './modules/Authentication/Login/Login';
-import Register from './modules/Authentication/Register/Register';
-import VerifyAccount from './modules/Authentication/VerifyAccount/VerifyAccount';
-import ForgetPassword from './modules/Authentication/ForgetPassword/ForgetPassword';
-import ResetPassword from './modules/Authentication/ResetPassword/ResetPassword';
-import ChangePassword from './modules/Authentication/ChangePassword/ChangePassword';
-import AdminLayout from './modules/Shared/Layouts/AdminLayout/AdminLayout';
-import Dashboard from './modules/Admin/Dashboard/components/Dashboard';
-import RoomsList from './modules/Admin/Rooms/components/RoomsList';
-import RoomData from './modules/Admin/Rooms/components/RoomData';
-import FacilitiesList from './modules/Admin/Facilities/components/FacilitiesList';
-import AdsList from './modules/Admin/Ads/components/AdsList';
-import BookingsList from './modules/Admin/Bookings/components/BookingsList';
-import UsersList from './modules/Admin/Users/components/UsersList';
-import MainLayout from './modules/Shared/Layouts/MainLayout/MainLayout';
-import Home from './modules/User/LandingPage/components/Home';
-import ExploreRooms from './modules/User/Rooms/components/ExploreRooms/ExploreRooms';
-import RoomDetails from './modules/User/Rooms/components/RoomDetails/RoomDetails';
-import FavList from './modules/User/Favourites/components/FavList';
-import PaymentLayout from './modules/Shared/Layouts/PaymentLayout/PaymentLayout';
-import PaymentForm from './modules/User/Payment/components/PaymentForm';
 import ProtectedRoutes from './modules/Shared/ProtectedRoutes/ProtectedRoutes';
 
+const AuthLayout = lazy(() => import('./modules/Shared/Layouts/AuthLayout/AuthLayout'));
+const NotFound = lazy(() => import('./modules/Shared/NotFound/NotFound'));
+const Login = lazy(() => import('./modules/Authentication/Login/Login'));
+const Register = lazy(() => import('./modules/Authentication/Register/Register'));
+const VerifyAccount = lazy(() => import('./modules/Authentication/VerifyAccount/VerifyAccount'));
+const ForgetPassword = lazy(() => import('./modules/Authentication/ForgetPassword/ForgetPassword'));
+const ResetPassword = lazy(() => import('./modules/Authentication/ResetPassword/ResetPassword'));
+const ChangePassword = lazy(() => import('./modules/Authentication/ChangePassword/ChangePassword'));
+const AdminLayout = lazy(() => import('./modules/Shared/Layouts/AdminLayout/AdminLayout'));
+const Dashboard = lazy(() => import('./modules/Admin/Dashboard/components/Dashboard'));
+const RoomsList = lazy(() => import('./modules/Admin/Rooms/components/RoomsList'));
+const RoomData = lazy(() => import('./modules/Admin/Rooms/components/RoomData'));
+const FacilitiesList = lazy(() => import('./modules/Admin/Facilities/components/FacilitiesList'));
+const AdsList = lazy(() => import('./modules/Admin/Ads/components/AdsList'));
+const BookingsList = lazy(() => import('./modules/Admin/Bookings/components/BookingsList'));
+const UsersList = lazy(() => import('./modules/Admin/Users/components/UsersList'));
+const MainLayout = lazy(() => import('./modules/Shared/Layouts/MainLayout/MainLayout'));
+const Home = lazy(() => import('./modules/User/LandingPage/components/Home'));
+const ExploreRooms = lazy(() => import('./modules/User/Rooms/components/ExploreRooms/ExploreRooms'));
+const RoomDetails = lazy(() => import('./modules/User/Rooms/components/RoomDetails/RoomDetails'));
+const FavList = lazy(() => import('./modules/User/Favourites/components/FavList'));
+const PaymentLayout = lazy(() => import('./modules/Shared/Layouts/PaymentLayout/PaymentLayout'));
+const PaymentForm = lazy(() => import('./modules/User/Payment/components/PaymentForm'));
 
 function App() {
   const routes = createBrowserRouter([
@@ -91,7 +92,9 @@ function App() {
         pauseOnHover
         theme="colored"
         />
-      <RouterProvider router={routes}></RouterProvider>
+      <Suspense fallback={<div aria-busy="true" />}>
+        <RouterProvider router={routes} />
+      </Suspense>
       </>
   )
 }
