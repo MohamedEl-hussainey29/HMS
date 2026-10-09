@@ -1,8 +1,11 @@
 import './App.css'
-import { lazy, Suspense } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoutes from './modules/Shared/ProtectedRoutes/ProtectedRoutes';
+
+const ToastContainer = lazy(() =>
+  import('react-toastify').then(({ ToastContainer }) => ({ default: ToastContainer })),
+);
 
 const AuthLayout = lazy(() => import('./modules/Shared/Layouts/AuthLayout/AuthLayout'));
 const NotFound = lazy(() => import('./modules/Shared/NotFound/NotFound'));
@@ -29,6 +32,14 @@ const PaymentLayout = lazy(() => import('./modules/Shared/Layouts/PaymentLayout/
 const PaymentForm = lazy(() => import('./modules/User/Payment/components/PaymentForm'));
 
 function App() {
+  const [showToastContainer, setShowToastContainer] = useState(false);
+
+  useEffect(() => {
+    // Toasts are queued by react-toastify until its container mounts.
+    const timeoutId = window.setTimeout(() => setShowToastContainer(true), 1200);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   const routes = createBrowserRouter([
     {
       path: '/auth',
@@ -80,18 +91,22 @@ function App() {
   return (
       <>
       
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        />
+      {showToastContainer && (
+        <Suspense fallback={null}>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </Suspense>
+      )}
       <Suspense fallback={<div aria-busy="true" />}>
         <RouterProvider router={routes} />
       </Suspense>

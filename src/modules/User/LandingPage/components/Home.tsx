@@ -1,7 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import Header from "./Header";
 import PopularAds from "./PopularAds";
-import StaticSection from "./StaticSection";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AdsAPI } from "../../../../api";
 import useGetData from "../../../../hooks/useGetData";
@@ -9,6 +8,7 @@ import type { AdsResponse } from "../../../Admin/Ads/components/AdsList";
 
 const AdsSlider = lazy(() => import("./AdsSlider"));
 const ReviewsSlider = lazy(() => import("./ReviewsSlider"));
+const StaticSection = lazy(() => import("./StaticSection"));
 
 function DeferredSection({ children, minHeight }: { children: ReactNode; minHeight: number }) {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,9 @@ export default function Home() {
       <Grid sx={{ px: { xs: 3, md: 8 }, py: { xs: 5, md: 8 }, overflow: "hidden" }}>
         <Header/>
         <PopularAds ads={ads} isLoading={isLoading}/>
-        <StaticSection/>
+        <DeferredSection minHeight={900}>
+          <StaticSection />
+        </DeferredSection>
         <DeferredSection minHeight={300}>
           <AdsSlider ads={ads} isLoading={isLoading} />
         </DeferredSection>
